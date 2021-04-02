@@ -35,7 +35,7 @@ public class HandleLobbies implements Runnable{
         lobby = new Lobby("");
     }
 
-    public void addPlayer(Socket playerTwo, Lobby myLobby){
+    public void addPlayer(Socket playerTwo){
         this.playerTwo = playerTwo;
         
         System.out.println("Made it into addPlayer");
