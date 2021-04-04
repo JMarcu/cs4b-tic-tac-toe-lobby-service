@@ -18,12 +18,32 @@ public class HandleLobbies implements Runnable{
 
     private Lobby lobby;
     
+    public HandleLobbies(Socket playerOne)
+    {
+        this.playerOne = playerOne;
+
+        lobby = new Lobby("");
+    }
+
     public HandleLobbies(Socket playerOne, Socket playerTwo){
+
+        System.out.println("Made it into HandleLobbies");
 
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
         
         lobby = new Lobby("");
+    }
+
+    public void addPlayer(Socket playerTwo){
+        this.playerTwo = playerTwo;
+        
+        System.out.println("Made it into addPlayer");
+        //add playerTwo to lobby
+    }
+
+    public int lobbySize(){
+        return lobby.getPlayers().size();
     }
 
     @Override
