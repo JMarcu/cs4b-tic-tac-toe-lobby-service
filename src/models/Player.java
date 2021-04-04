@@ -4,6 +4,7 @@ import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.SubmissionPublisher;
 import java.io.Serializable;
+import java.net.Socket;
 import java.util.UUID;
 import javafx.scene.paint.Color;
 
@@ -28,6 +29,9 @@ public class Player implements Serializable {
 
         /** The shape of the player's marker. */
         protected MarkerShape shape;
+
+        /** The socket that is tied to the player. */
+        protected Socket socket;
         
         /**
          * Returns the color of the player's marker.
@@ -46,6 +50,12 @@ public class Player implements Serializable {
          * @return The shape of the player's marker, or null if the shape has not changed since the last patch.
          */
         public MarkerShape getShape() { return shape; }
+
+        /**
+         * Returns the socket of the player.
+         * @return The the socket of the player.
+         */
+        public Socket getSocket() { return socket; }
     }
 
     /************************************************************************************************************
@@ -69,6 +79,9 @@ public class Player implements Serializable {
 
     /** The shape of the player's marker. */
     private MarkerShape shape;
+
+    /** The socket that is tied to the player. */
+    protected Socket socket;
 
     /** Constructs a default player object. */
     public Player() {
@@ -114,6 +127,12 @@ public class Player implements Serializable {
      * @return The shape of the player's marker.
      */
     public MarkerShape getShape() {return this.shape;}
+
+    /**
+         * Returns the socket of the player.
+         * @return The the socket of the player.
+         */
+        public Socket getSocket() { return this.socket; }
     
     /**
      * Returns whether the player is an AI.
@@ -158,6 +177,20 @@ public class Player implements Serializable {
                 shape = Player.this.shape;
             }
         });
+    }
+
+    /**
+     * Sets the socket for the player's device. Subscribers are notified.
+     * @param shape The new socket for the player's device.
+     */
+    public void setSocket(Socket socket){
+        this.socket = socket;
+        this.notifySubscribers(new Patch(){
+           {
+               socket = Player.this.socket;
+           }
+        }
+        );
     }
 
     /*==========================================================================================================
