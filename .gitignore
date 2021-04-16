@@ -1,5 +1,4 @@
 .vscode/
-.settings/
 target/
 target/**
 *.drawio
