@@ -69,36 +69,44 @@
     </dependency>
     
     <dependency>
-        <groupId>org.javatuples</groupId>
-        <artifactId>javatuples</artifactId>
-        <version>1.2</version>
-        <scope>compile</scope>
+      <groupId>org.javatuples</groupId>
+      <artifactId>javatuples</artifactId>
+      <version>1.2</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-catalina -->
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-catalina</artifactId>
+      <version>10.0.5</version>
     </dependency>
 
     <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-core</artifactId>
-        <version>10.0.5</version>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-core</artifactId>
+      <version>10.0.5</version>
     </dependency>
 
     <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-jasper</artifactId>
-        <version>10.0.5</version>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-jasper</artifactId>
+      <version>10.0.5</version>
     </dependency>
 
     <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-jasper</artifactId>
-        <version>10.0.5</version>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-jasper</artifactId>
+      <version>10.0.5</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-websocket -->
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-websocket</artifactId>
       <version>10.0.5</version>
     </dependency>
-
+      
     <dependency>
       <groupId>javax.websocket</groupId>
       <artifactId>javax.websocket-api</artifactId>
@@ -162,21 +170,21 @@
             <artifactId>appassembler-maven-plugin</artifactId>
             <version>2.0.0</version>
             <configuration>
-                <assembleDirectory>target</assembleDirectory>
-                <programs>
-                    <program>
-                        <mainClass>launch.App</mainClass>
-                        <name>webapp</name>
-                    </program>
-                </programs>
+              <assembleDirectory>target</assembleDirectory>
+              <programs>
+                <program>
+                  <mainClass>launch.App</mainClass>
+                  <name>webapp</name>
+                </program>
+              </programs>
             </configuration>
             <executions>
-                <execution>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>assemble</goal>
-                    </goals>
-                </execution>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>assemble</goal>
+                </goals>
+              </execution>
             </executions>
         </plugin>
       </plugins>
