@@ -21,18 +21,16 @@ import models.ServerMessage.PlayerPropertiesMessageBody;
 public class App {
     
     public static void main(String[] args) throws Exception {
-        ArrayList<ClientHandler> clientHandlers;
-        HashMap<UUID, Client> clients;
-        ArrayList<Lobby> lobbies;
-        ServerSocket serverSocket;
+        ArrayList<ClientHandler> clientHandlers = new ArrayList<ClientHandler>();
+        HashMap<UUID, Client> clients = new HashMap<UUID, Client>();
+        ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
+        ServerSocket serverSocket = null;
 
-        clientHandlers = new ArrayList<ClientHandler>();
-        clients = new HashMap<UUID, Client>();
-        lobbies = new ArrayList<Lobby>();
-        serverSocket = null; 
-        
+        final Integer PORT = Integer.parseInt(System.getenv("PORT"));
+        System.out.println("PORT: " + PORT);
+
         try {
-            serverSocket = new ServerSocket(80);
+            serverSocket = new ServerSocket(PORT);
 
             System.out.println("Server started and listening for new connections...");
 
