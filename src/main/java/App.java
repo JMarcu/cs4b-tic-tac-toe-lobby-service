@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -31,7 +32,7 @@ public class App {
         serverSocket = null; 
         
         try {
-            serverSocket = new ServerSocket(4210);
+            serverSocket = new ServerSocket(80);
 
             System.out.println("Server started and listening for new connections...");
 
@@ -39,7 +40,10 @@ public class App {
                 Lobby lobby = new Lobby(UUID.randomUUID().toString());
                 lobbies.add(lobby);
 
-                Client clientOne = new Client(serverSocket.accept());
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Client Socket Initialied :: isConnected " + clientSocket.isConnected());
+                Client clientOne = new Client(clientSocket);
+
                 clients.put(clientOne.getUuid(), clientOne);
                 ClientHandler clientOneHandler = new ClientHandler(clientOne, lobby, clients);
                 clientHandlers.add(clientOneHandler);
