@@ -1,5 +1,3 @@
 .vscode/
-target/
-target/**
 *.drawio
 *.png
