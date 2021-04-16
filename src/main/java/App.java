@@ -22,6 +22,7 @@ import models.ServerMessage.MessageType;
 import models.ServerMessage.PlayerPropertiesMessageBody;
  
 import org.apache.catalina.WebResourceRoot;
+import org.apache.catalina.Context;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
