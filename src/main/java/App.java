@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -6,28 +7,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.eclipse.jetty.websocket.server.JettyWebSocketServlet;
-import org.eclipse.jetty.websocket.server.JettyWebSocketServletFactory;
-import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
-
-import jakarta.servlet.Servlet;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import javafx.scene.paint.Color;
+
 import models.Client;
 import models.ClientHandler;
 import models.Lobby;
@@ -39,43 +20,56 @@ import models.TestListener;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageType;
 import models.ServerMessage.PlayerPropertiesMessageBody;
+ 
+import org.apache.catalina.WebResourceRoot;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.startup.Tomcat;
+import org.apache.catalina.webresources.DirResourceSet;
+import org.apache.catalina.webresources.StandardRoot;
 
-public class App extends HttpServlet {
+public class App {
     
     public static void main(String[] args) throws Exception {
         ArrayList<ClientHandler> clientHandlers = new ArrayList<ClientHandler>();
         HashMap<UUID, Client> clients = new HashMap<UUID, Client>();
-        Connector connector = null;
         ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
-        Server server = null;
 
         final Integer PORT = Integer.parseInt(System.getenv("PORT"));
         System.out.println("PORT: " + PORT);
-
-        try {
-            server = new Server(PORT);
-            ContextHandlerCollection handlers = new ContextHandlerCollection();
-            ResourceHandler handler = new ResourceHandler();
-            handlers.addHandler(createContextHandler("/", handler));
-
-            Servlet websocketServlet = new JettyWebSocketServlet() {
-                @Override 
-                protected void configure(JettyWebSocketServletFactory factory) {
-                    factory.addMapping("/", (req, res) -> new TestListener());
-                }
-            };
             
-            ServletContextHandler servletContextHandler = new ServletContextHandler();
-            servletContextHandler.addServlet(new ServletHolder(websocketServlet), "/ws");
-            JettyWebSocketServletContainerInitializer.configure(servletContextHandler, null);
-            handlers.addHandler(servletContextHandler);
-        
-            server.setHandler(handlers);
-        
-            server.start();
-            server.join();
+        String webappDirLocation = "src/main/webapp/";
+        Tomcat tomcat = new Tomcat();
 
-            System.out.println("Server started and listening for new connections...");
+        //The port that we should run on can be set into an environment variable
+        //Look for that variable and default to 8080 if it isn't there.
+        String webPort = System.getenv("PORT");
+        if(webPort == null || webPort.isEmpty()) {
+            webPort = "8080";
+        }
+
+        tomcat.setPort(Integer.valueOf(webPort));
+
+        StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
+        System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
+
+        // Declare an alternative location for your "WEB-INF/classes" dir
+        // Servlet 3.0 annotation will work
+        File additionWebInfClasses = new File("target/classes");
+        WebResourceRoot resources = new StandardRoot(ctx);
+        resources.addPreResources(
+            new DirResourceSet(
+                resources, 
+                "/WEB-INF/classes",
+                additionWebInfClasses.getAbsolutePath(),
+                "/"
+            )
+        );
+        ctx.setResources(resources);
+
+        tomcat.start();
+        tomcat.getServer().await();
+
+        System.out.println("Server started and listening for new connections...");
 
             // while(true){
             //     Lobby lobby = new Lobby(UUID.randomUUID().toString());
@@ -138,24 +132,6 @@ public class App extends HttpServlet {
             //     //     System.out.println();
             //     // }
             // }
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            // try {
-            //     serverSocket.close();            
-            // }            
-            // catch (Exception ex){}        
-        }
-    }
-    
-    private static ContextHandler createContextHandler(String contextPath, Handler wrappedHandler){
-        ContextHandler ch = new ContextHandler (contextPath);
-        ch.setHandler(wrappedHandler);
-        ch.clearAliasChecks();
-        ch.setAllowNullPathInfo(true);
-        return ch;
     }
 
     public static int randomLobbySearch(ArrayList<Lobby> lobbyList){

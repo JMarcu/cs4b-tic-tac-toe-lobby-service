@@ -1,20 +1,27 @@
 package models;
 
-import org.eclipse.jetty.websocket.api.WebSocketListener;
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
 
-public class TestListener implements WebSocketListener {
-    @Override
-    public void onWebSocketBinary(byte[] payload, int offset, int len){
-        System.out.println("Payload: " + payload);
+@ServerEndpoint("/ws")
+public class TestListener {
+    @OnOpen
+    public void onOpen(Session session) {
+        System.out.println("open");
     }
 
-    /**
-     * A WebSocket Text frame was received.
-     *
-     * @param message the message
-     */
-    @Override
-    public void onWebSocketText(String message){
-        System.out.println("message: " + message);
+
+    @OnClose
+    public void onClose(Session session) {
+        System.out.println("close");
+    }
+
+    @OnMessage
+    public String onMessage(String text) {
+        System.out.println("message:" + text);
+        return "Server:" + text;
     }
 }
