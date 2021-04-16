@@ -40,6 +40,8 @@ public class App {
 
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client Socket Initialied :: isConnected " + clientSocket.isConnected());
+                System.out.println("Client Socket Initialied :: getRemoteSocketAddress " + clientSocket.getRemoteSocketAddress());
+                
                 Client clientOne = new Client(clientSocket);
 
                 clients.put(clientOne.getUuid(), clientOne);
