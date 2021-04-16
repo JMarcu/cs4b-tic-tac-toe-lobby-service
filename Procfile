@@ -1,0 +1,1 @@
+web: java -jar target/lobby-service-1.0.jar
