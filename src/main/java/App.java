@@ -1,9 +1,15 @@
 import java.util.HashMap;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
+
+import javax.servlet.http.HttpServlet;
+
 import models.Client;
 import models.ClientHandler;
 import models.Lobby;
+
+import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 
 public class App {
@@ -46,6 +52,7 @@ public class App {
         //     )
         // );
         // ctx.setResources(resources);
+
 
         tomcat.start();
         tomcat.getServer().await();
