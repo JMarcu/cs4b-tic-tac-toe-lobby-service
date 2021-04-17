@@ -1,8 +1,8 @@
 package models.ServerMessage;
 
 public enum MessageType {
-    AUTHENTICATION_SUCCESS, // Defines the player who is logging in. 
     AUTHENTICATION_REQUEST, // Request from the client to authenticate.
+    AUTHENTICATION_RESULT, 
     AUTHENTICATION_ACKNOWLEDGED, // Final step in handshake, client is ready for messages.
     CHAT, 
     CONNECTION,
