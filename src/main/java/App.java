@@ -22,6 +22,7 @@ import models.ServerMessage.MessageType;
 import models.ServerMessage.PlayerPropertiesMessageBody;
  
 import org.apache.catalina.WebResourceRoot;
+import org.apache.catalina.connector.Connector;
 import org.apache.catalina.Context;
 import org.apache.catalina.Host;
 import org.apache.catalina.core.StandardContext;
@@ -48,9 +49,10 @@ public class App {
         if(webPort == null || webPort.isEmpty()) {
             webPort = "8080";
         }
+        System.out.println("Receiving webport value " + webPort);
 
-        tomcat.setHostname("0.0.0.0");
         tomcat.setPort(Integer.valueOf(webPort));
+        tomcat.getConnector().setDomain("0.0.0.0");
 
         // StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
         // System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
