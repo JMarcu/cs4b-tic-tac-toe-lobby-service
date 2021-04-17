@@ -1,16 +1,16 @@
 import java.util.HashMap;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import javax.servlet.http.HttpServlet;
 
 import models.Client;
 import models.ClientHandler;
 import models.Lobby;
 
-import org.apache.catalina.Context;
+import org.apache.catalina.Engine;
+import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.StandardEngine;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.coyote.http11.Http11Nio2Protocol;
 
 public class App {
     
@@ -18,9 +18,6 @@ public class App {
         ArrayList<ClientHandler> clientHandlers = new ArrayList<ClientHandler>();
         HashMap<UUID, Client> clients = new HashMap<UUID, Client>();
         ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
-
-        final Integer PORT = Integer.parseInt(System.getenv("PORT"));
-        System.out.println("PORT: " + PORT);
             
         // String webappDirLocation = "src/main/webapp/";
         Tomcat tomcat = new Tomcat();
@@ -29,12 +26,17 @@ public class App {
         //Look for that variable and default to 8080 if it isn't there.
         String webPort = System.getenv("PORT");
         if(webPort == null || webPort.isEmpty()) {
-            webPort = "8080";
+            webPort = "4210";
         }
         System.out.println("Receiving webport value " + webPort);
 
-        tomcat.setPort(Integer.valueOf(webPort));
-        tomcat.getConnector().setDomain("0.0.0.0");
+        Connector connector = new Connector(new Http11Nio2Protocol());
+        connector.setDomain("0.0.0.0");
+        connector.setPort(Integer.valueOf(webPort));
+        tomcat.setConnector(connector);
+        connector.getService().setContainer(new StandardEngine());
+        connector.getService().getContainer().setDefaultHost("0.0.0.0");
+        connector.getService().getContainer().getPipeline();
 
         // StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
         // System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
