@@ -41,7 +41,7 @@ public class App {
             webPort = "4210";
         }
         tomcat.setPort(Integer.parseInt(webPort));
-        tomcat.getConnector();
+        tomcat.getConnector().getService().setContainer(new StandardEngine());
         // tomcat.setBaseDir(".");
         // System.out.println("Receiving webport value " + webPort);
 
