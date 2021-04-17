@@ -41,7 +41,9 @@ public class App {
             webPort = "4210";
         }
         tomcat.setPort(Integer.parseInt(webPort));
-        System.out.println("Receiving webport value " + webPort);
+        tomcat.getConnector();
+        // tomcat.setBaseDir(".");
+        // System.out.println("Receiving webport value " + webPort);
 
         // Connector connector = new Connector(new Http11Nio2Protocol());
         // connector.setDomain("0.0.0.0");
@@ -59,22 +61,22 @@ public class App {
         // connector.getService().setContainer();
         // connector.getService().getContainer().setDefaultHost("cs4b-tic-tac-toe-lobby-service.herokuapp.com");
                 
-        StandardContext ctx = (StandardContext) tomcat.addWebapp("", new File(webappDirLocation).getAbsolutePath());
-        System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
+        // StandardContext ctx = (StandardContext) tomcat.addWebapp("", new File(webappDirLocation).getAbsolutePath());
+        // System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
 
-        // Declare an alternative location for your "WEB-INF/classes" dir
-        // Servlet 3.0 annotation will work
-        File additionWebInfClasses = new File("target/classes");
-        WebResourceRoot resources = new StandardRoot();
-        resources.addPreResources(
-            new DirResourceSet(
-                resources, 
-                "/WEB-INF/classes",
-                additionWebInfClasses.getAbsolutePath(),
-                "/"
-            )
-        );
-        ctx.setResources(resources);
+        // // Declare an alternative location for your "WEB-INF/classes" dir
+        // // Servlet 3.0 annotation will work
+        // File additionWebInfClasses = new File("target/classes");
+        // WebResourceRoot resources = new StandardRoot();
+        // resources.addPreResources(
+        //     new DirResourceSet(
+        //         resources, 
+        //         "/WEB-INF/classes",
+        //         additionWebInfClasses.getAbsolutePath(),
+        //         "/"
+        //     )
+        // );
+        // ctx.setResources(resources);
 
         // String webappDirLocation = setupWebapp();
         // File thisJar = new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
