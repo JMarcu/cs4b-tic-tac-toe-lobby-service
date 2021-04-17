@@ -1,7 +1,6 @@
 .vscode/
 *.drawio
 *.png
-target
-target/
-target/*
-target/**/*
+/target/
+*/target/**
+**/META-INF/
