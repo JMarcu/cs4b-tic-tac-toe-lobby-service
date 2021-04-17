@@ -1,91 +1,42 @@
-import java.util.HashMap;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.UUID;
 
-import models.Client;
-import models.ClientHandler;
-import models.Lobby;
+import javax.websocket.EndpointConfig;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
 
-import org.apache.catalina.Context;
-import org.apache.catalina.Engine;
 import org.apache.catalina.WebResourceRoot;
-import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.core.StandardEngine;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
-import org.apache.coyote.http11.Http11Nio2Protocol;
-
 public class App {
     
     public static void main(String[] args) throws Exception {
-        ArrayList<ClientHandler> clientHandlers = new ArrayList<ClientHandler>();
-        HashMap<UUID, Client> clients = new HashMap<UUID, Client>();
-        ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
-            
-        String webappDirLocation = "src/main/webapp/";
         Tomcat tomcat = new Tomcat();
 
-        //The port that we should run on can be set into an environment variable
-        //Look for that variable and default to 8080 if it isn't there.
         String webPort = System.getenv("PORT");
         if(webPort == null || webPort.isEmpty()) {
-            webPort = "4210";
+            webPort = "4211";
         }
-        tomcat.setPort(Integer.parseInt(webPort));
-        tomcat.getConnector().getService().setContainer(new StandardEngine());
-        // tomcat.setBaseDir(".");
-        // System.out.println("Receiving webport value " + webPort);
+        tomcat.setPort(Integer.valueOf(webPort));
+        
+        String webappDirLocation = "src/main/webapp";
+        StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
+        System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
 
-        // Connector connector = new Connector(new Http11Nio2Protocol());
-        // connector.setDomain("0.0.0.0");
-        // connector.setPort(Integer.valueOf(webPort));
-        // connector.
-        // tomcat.setConnector(connector);
-
-        // StandardContext ctx = (StandardContext) tomcat.addContext(
-        //     "cs4b-tic-tac-toe-lobby-service.herokuapp.com", 
-        //     contextPath, 
-        //     contextName, 
-        //     dir
-        // )
-        // Engine engine = new StandardEngine();
-        // connector.getService().setContainer();
-        // connector.getService().getContainer().setDefaultHost("cs4b-tic-tac-toe-lobby-service.herokuapp.com");
-                
-        // StandardContext ctx = (StandardContext) tomcat.addWebapp("", new File(webappDirLocation).getAbsolutePath());
-        // System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
-
-        // // Declare an alternative location for your "WEB-INF/classes" dir
-        // // Servlet 3.0 annotation will work
-        // File additionWebInfClasses = new File("target/classes");
-        // WebResourceRoot resources = new StandardRoot();
-        // resources.addPreResources(
-        //     new DirResourceSet(
-        //         resources, 
-        //         "/WEB-INF/classes",
-        //         additionWebInfClasses.getAbsolutePath(),
-        //         "/"
-        //     )
-        // );
-        // ctx.setResources(resources);
-
-        // String webappDirLocation = setupWebapp();
-        // File thisJar = new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-        // tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
+        // Declare an alternative location for your "WEB-INF/classes" dir
+        // Servlet 3.0 annotation will work
+        File additionWebInfClasses = new File("target/classes");
+        WebResourceRoot resources = new StandardRoot(ctx);
+        resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes",
+                additionWebInfClasses.getAbsolutePath(), "/"));
+        ctx.setResources(resources);
 
         tomcat.start();
-        tomcat.getServer().await();
-
         System.out.println("Server started and listening for new connections...");
+        tomcat.getServer().await();
 
             // while(true){
             //     Lobby lobby = new Lobby(UUID.randomUUID().toString());
@@ -148,82 +99,5 @@ public class App {
             //     //     System.out.println();
             //     // }
             // }
-    }
-
-    private static String setupWebapp() throws Exception
-    {
-        File thisJar = new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-        System.out.println("thisJar: " + thisJar);
-        String target = "tempwebapp";
-        File targetFolder = new File(target + File.separator + "WEB-INF" + File.separator +"lib");
-        System.out.println("targetFolder: " + targetFolder);
-        targetFolder.mkdirs();
-        copyFileUsingChannel(thisJar, new File(targetFolder.getPath() + File.separator + "lobby-service-1.0.jar"));
-        InputStream stream = null;
-        OutputStream resStreamOut = null;
-        try {
-            stream = App.class.getResourceAsStream("index.html");
-            if(stream == null) {
-                throw new Exception("Cannot get resource \"index.html\" from Jar file.");
-            }
- 
-            int readBytes;
-            byte[] buffer = new byte[4096];
- 
-            resStreamOut = new FileOutputStream(target + File.separator + "index.html");
-            while ((readBytes = stream.read(buffer)) > 0) {
-                resStreamOut.write(buffer, 0, readBytes);
-            }
-        } catch (Exception ex) {
-            throw ex;
-        } finally {
- 
- 
-        }
-        return target;
-    }
- 
-    private static void copyFileUsingChannel(File source, File dest) throws IOException {
-        System.out.println(source);
-        System.out.println(dest);
-        FileInputStream sourceStream = null;
-        FileChannel sourceChannel = null;
-        FileChannel destChannel = null;
-        try {
-            sourceStream = (new FileInputStream(source));
-            System.out.println("sourceStream: " + sourceStream);
-            sourceChannel = sourceStream.getChannel();
-            System.out.println("sourceChannel: " + sourceChannel);
-            destChannel = new FileOutputStream(dest).getChannel();
-            System.out.println("destChannel: " + destChannel);
-            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-        } catch(Exception e){
-            e.printStackTrace();
-        } finally{
-        }
-        sourceStream.close();
-        destChannel.close();
-    }
-
-    public static int randomLobbySearch(ArrayList<Lobby> lobbyList){
-        
-        for(int i = 0; i < lobbyList.size(); i++){
-            if(lobbyList.get(i).getPlayers().size() < 2){
-
-                System.out.println("randomLobbySearch: Found an OPEN lobby");
-                return i;
-            }
-        }
-
-        System.out.println("randomLobbySearch: NO open lobbies");
-        return -1;
-    }
-
-    public void checkDeadLobbies(ArrayList<Lobby> lobbyList){
-        for(int i = 0; i < lobbyList.size(); i++){
-            if(lobbyList.get(i).getPlayers().size() < 2){
-                lobbyList.remove(i);
-            }
-        }
     }
 }
