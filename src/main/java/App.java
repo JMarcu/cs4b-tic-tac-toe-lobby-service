@@ -31,7 +31,7 @@ public class App {
         HashMap<UUID, Client> clients = new HashMap<UUID, Client>();
         ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
             
-        String webappDirLocation = "src/main/java/";
+        String webappDirLocation = "src/main/webapp/";
         Tomcat tomcat = new Tomcat();
 
         //The port that we should run on can be set into an environment variable
