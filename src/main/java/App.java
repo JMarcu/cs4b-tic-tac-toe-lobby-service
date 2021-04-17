@@ -8,6 +8,7 @@ import models.Lobby;
 
 import org.apache.catalina.Engine;
 import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardEngine;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.http11.Http11Nio2Protocol;
@@ -35,9 +36,8 @@ public class App {
         connector.setPort(Integer.valueOf(webPort));
         tomcat.setConnector(connector);
         connector.getService().setContainer(new StandardEngine());
-        connector.getService().getContainer().setDefaultHost("0.0.0.0");
-        connector.getService().getContainer().getPipeline();
-
+        connector.getService().getContainer().setDefaultHost("cs4b-tic-tac-toe-lobby-service.herokuapp.com");
+        
         // StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
         // System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
 
