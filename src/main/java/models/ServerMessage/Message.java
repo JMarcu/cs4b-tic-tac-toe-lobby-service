@@ -50,7 +50,7 @@ public class Message implements JSONable {
         JSONable body = null;
 
         switch(type){
-            case AUTHENTICATION_SUCCESS:
+            case AUTHENTICATION_RESULT:
                 body = new AuthenticationResultMessageBody();    
                 break;
             default:

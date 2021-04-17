@@ -2,3 +2,6 @@
 *.drawio
 *.png
 target
+target/
+target/*
+target/**/*
