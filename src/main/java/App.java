@@ -59,7 +59,7 @@ public class App {
         // connector.getService().setContainer();
         // connector.getService().getContainer().setDefaultHost("cs4b-tic-tac-toe-lobby-service.herokuapp.com");
                 
-        StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
+        StandardContext ctx = (StandardContext) tomcat.addWebapp("", new File(webappDirLocation).getAbsolutePath());
         System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
 
         // Declare an alternative location for your "WEB-INF/classes" dir
