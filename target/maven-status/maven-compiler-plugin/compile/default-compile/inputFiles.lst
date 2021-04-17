@@ -6,6 +6,8 @@
 /home/james/Documents/Schoolwork/CS 4B/cs4b-tic-tac-toe-lobby-service/src/main/java/models/GameMode.java
 /home/james/Documents/Schoolwork/CS 4B/cs4b-tic-tac-toe-lobby-service/src/main/java/models/PlayerData.java
 /home/james/Documents/Schoolwork/CS 4B/cs4b-tic-tac-toe-lobby-service/src/main/java/models/Client.java
+/home/james/Documents/Schoolwork/CS 4B/cs4b-tic-tac-toe-lobby-service/src/main/java/models/JSONable.java
+/home/james/Documents/Schoolwork/CS 4B/cs4b-tic-tac-toe-lobby-service/src/main/java/models/ServerMessage/AuthenticationResultMessageBody.java
 /home/james/Documents/Schoolwork/CS 4B/cs4b-tic-tac-toe-lobby-service/src/main/java/models/MarkerShape.java
 /home/james/Documents/Schoolwork/CS 4B/cs4b-tic-tac-toe-lobby-service/src/main/java/models/GameState.java
 /home/james/Documents/Schoolwork/CS 4B/cs4b-tic-tac-toe-lobby-service/src/main/java/models/MessageHandler.java
