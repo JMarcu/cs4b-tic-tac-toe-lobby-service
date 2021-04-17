@@ -23,6 +23,7 @@ import models.ServerMessage.PlayerPropertiesMessageBody;
  
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.Context;
+import org.apache.catalina.Host;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
@@ -48,6 +49,7 @@ public class App {
             webPort = "8080";
         }
 
+        tomcat.setHostname("0.0.0.0");
         tomcat.setPort(Integer.valueOf(webPort));
 
         // StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
