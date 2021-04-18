@@ -1,103 +1,51 @@
-
-import java.io.File;
-
-import javax.websocket.EndpointConfig;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
-
-import org.apache.catalina.WebResourceRoot;
-import org.apache.catalina.core.StandardContext;
+import java.io.*;
+import java.nio.channels.FileChannel;
 import org.apache.catalina.startup.Tomcat;
-import org.apache.catalina.webresources.DirResourceSet;
-import org.apache.catalina.webresources.StandardRoot;
+
 public class App {
+    private final String SERVICE_NAME = "lobby-service";
     
     public static void main(String[] args) throws Exception {
+        final App app = new App();
+        app.launchServer();
+    }
+
+    private void launchServer() {
+        //This is an embedded Tomcat webserver which will host the service.
         Tomcat tomcat = new Tomcat();
 
+        /*Bind to proper port. Heroku will inject this through a system variable,
+          but we use a default value for local development. */
         String webPort = System.getenv("PORT");
         if(webPort == null || webPort.isEmpty()) {
-            webPort = "4211";
+            webPort = "4205";
         }
-        tomcat.setPort(Integer.valueOf(webPort));
-        
-        String webappDirLocation = "src/main/webapp";
-        StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
-        System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
+        tomcat.setPort(Integer.parseInt(webPort));
 
-        // Declare an alternative location for your "WEB-INF/classes" dir
-        // Servlet 3.0 annotation will work
-        File additionWebInfClasses = new File("target/classes");
-        WebResourceRoot resources = new StandardRoot(ctx);
-        resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes",
-                additionWebInfClasses.getAbsolutePath(), "/"));
-        ctx.setResources(resources);
+        try {
+            //Get a reference to the service's jar file.
+            File jar = new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 
-        tomcat.start();
-        System.out.println("Server started and listening for new connections...");
-        tomcat.getServer().await();
+            //Create a destination directory to run the jar file from, inside of the WEB-INF folder.
+            File targetFolder = new File(SERVICE_NAME + File.separator + "WEB-INF" + File.separator +"lib");
+            File destination = new File(targetFolder.getPath() + File.separator + SERVICE_NAME + ".jar");
+            targetFolder.mkdirs();
+    
+            //Copy the service's jar file to the WEB-INF directory.
+            FileChannel sourceChannel = new FileInputStream(jar).getChannel();
+            FileChannel destChannel = new FileOutputStream(destination).getChannel();
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+            sourceChannel.close();
+            destChannel.close();
 
-            // while(true){
-            //     Lobby lobby = new Lobby(UUID.randomUUID().toString());
-            //     lobbies.add(lobby);
+            //Add the webapp context to the embedded Tomcat instance.
+            tomcat.addWebapp("/", new File(SERVICE_NAME).getAbsolutePath());
 
-            //     Socket clientSocket = serverSocket.accept();
-            //     System.out.println("Client Socket Initialied :: isConnected " + clientSocket.isConnected());
-            //     System.out.println("Client Socket Initialied :: getRemoteSocketAddress " + clientSocket.getRemoteSocketAddress());
-                
-            //     Client clientOne = new Client(clientSocket);
- 
-            //     clients.put(clientOne.getUuid(), clientOne);
-            //     ClientHandler clientOneHandler = new ClientHandler(clientOne, lobby, clients);
-            //     clientHandlers.add(clientOneHandler);
-            //     System.out.println("Client One Connected: " + clientOne);
-            //     PlayerData authPatchOne = new PlayerData(
-            //         new SerializeableColor(Color.BLACK),
-            //         "Player One",
-            //         MarkerShape.X
-            //     );
-            //     PlayerPropertiesMessageBody authBodyOne = new PlayerPropertiesMessageBody(authPatchOne, clientOne.getUuid());
-            //     clientOne.dispatchMessage(new Message(authBodyOne, MessageType.AUTHENTICATION_SUCCESS));
-            //     // clientOne.dispatchMessage(new Message(llMsgBody, MessageType.LOBBY_LIST));
-
-            //     Client clientTwo = new Client(serverSocket.accept());
-            //     clients.put(clientTwo.getUuid(), clientTwo);
-            //     ClientHandler clientTwoHandler = new ClientHandler(clientTwo, lobby, clients);
-            //     clientHandlers.add(clientTwoHandler);
-            //     System.out.println("Client Two Connected: " + clientTwo);
-            //     PlayerData authPatchTwo = new PlayerData(
-            //         new SerializeableColor(Color.BLACK),
-            //         "Player Two",
-            //         MarkerShape.O
-            //     );
-            //     PlayerPropertiesMessageBody authBodyTwo = new PlayerPropertiesMessageBody(authPatchTwo, clientTwo.getUuid());
-            //     clientOne.dispatchMessage(new Message(authBodyTwo, MessageType.AUTHENTICATION_SUCCESS));
-
-            //     //Searching for a random Lobby that has any open spots
-            //     // int index = randomLobbySearch(lobbies);
-
-            //     // System.out.println("Lobby index: " + index);
-
-            //     // if(index != -1){
-            //     //     System.out.println("preexisting lobby found");
-            //     //     lobbies.get(index).addPlayer(player);
-            //     //     System.out.println("Lobbysize: " + lobbies.get(index).getPlayers().size()); 
-            //     //     System.out.println("added a player to a preexisting lobby");
-            //     // }
-            //     // else{
-
-            //     //     lobbyCount++;
-            //     //     HandleLobbies hl = new HandleLobbies(player, lobbyCount);
-            //     //     //hl.getLobby().addPlayer(player);
-
-            //     //     lobbies.add(hl.getLobby());
-
-            //     //     System.out.println("added a new lobby");
-
-            //     //     System.out.println();
-            //     //     System.out.println();
-            //     // }
-            // }
+            //Start the server.
+            tomcat.start();
+            tomcat.getServer().await();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
