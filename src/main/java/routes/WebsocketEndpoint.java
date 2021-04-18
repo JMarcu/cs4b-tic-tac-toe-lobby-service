@@ -8,7 +8,11 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.Session;
+
+import models.ServerMessage.AuthenticationRequestMessageBody;
+import models.ServerMessage.AuthenticationResultMessageBody;
 import models.ServerMessage.Message;
+import models.ServerMessage.MessageType;
 
 @ServerEndpoint(value = "/ws")
 public class WebsocketEndpoint implements Sender {
@@ -33,6 +37,12 @@ public class WebsocketEndpoint implements Sender {
             case AUTHENTICATION_ACKNOWLEDGED:
                 break;
             case AUTHENTICATION_REQUEST:
+                AuthenticationRequestMessageBody authRequestBody = gson.fromJson(message.getBody(), AuthenticationRequestMessageBody.class);
+                boolean validToken = authRequestBody.getToken() != "";
+                AuthenticationResultMessageBody authResultResponse = new AuthenticationResultMessageBody(validToken);
+                try {
+                    send(new Message(authResultResponse, MessageType.AUTHENTICATION_RESULT));
+                } catch (IOException e) { e.printStackTrace(); }
                 break;
             case AUTHENTICATION_RESULT:
                 break;
