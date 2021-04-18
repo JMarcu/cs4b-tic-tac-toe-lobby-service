@@ -1,4 +1,4 @@
-package Interfaces;
+package interfaces;
 
 import java.io.IOException;
 import models.ServerMessage.Message;

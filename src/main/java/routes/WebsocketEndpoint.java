@@ -1,7 +1,7 @@
 package routes;
 
 import com.google.gson.Gson;
-import Interfaces.Sender;
+import interfaces.Sender;
 import java.io.IOException;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
