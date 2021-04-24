@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import javafx.util.Pair;
 
 public class GameDatabaseInterface {
-    void addGame (List<Integer> players, long start, long end, List<Pair<Integer,Integer>>moves, Integer winner, Integer id){
+    public void addGame (Game game){
         //TODO
         //might need to change types what is coming in
     }
 
-    List<Game> getGames(){
+    public List<Game> getGames(){
         List<Game> games;
         games = new ArrayList<Game>();
         //TODO
