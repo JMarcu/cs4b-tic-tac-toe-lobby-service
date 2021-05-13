@@ -95,7 +95,6 @@ public class GameServer extends Lobby {
         });
     }
 
-
     private void onGameStatePatch(GameState.Patch patch){
         if(patch.getStatus() != null){
             status = patch.getStatus();

@@ -22,6 +22,7 @@ public class PlayerDatabaseInterface {
         // constructor code
         try{
         Connection conn = getConn();
+        System.out.print(conn);
         Statement stmt = conn.createStatement();
 
         //create LoginCredentials / RefreshTokens table
