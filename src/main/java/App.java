@@ -3,6 +3,9 @@ import java.nio.channels.FileChannel;
 import org.apache.catalina.startup.Tomcat;
 
 import interfaces.GameDatabaseInterface;
+import interfaces.PlayerDatabaseInterface;
+import models.Player;
+import models.PlayerData;
 
 public class App {
     private final String SERVICE_NAME = "lobby-service";
@@ -47,7 +50,7 @@ public class App {
             tomcat.start();
             tomcat.getServer().await();
 
-            GameDatabaseInterface test = new GameDatabaseInterface();
+            PlayerDatabaseInterface.getInstance();
             
         } catch (Exception e) {
             e.printStackTrace();
