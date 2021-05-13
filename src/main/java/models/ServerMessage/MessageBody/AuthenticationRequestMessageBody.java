@@ -1,4 +1,4 @@
-package models.ServerMessage;
+package models.ServerMessage.MessageBody;
 
 public class AuthenticationRequestMessageBody {
     private String token;
