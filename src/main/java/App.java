@@ -28,6 +28,8 @@ public class App {
         tomcat.setPort(Integer.parseInt(webPort));
 
         try {
+            PlayerDatabaseInterface.getInstance();
+
             //Get a reference to the service's jar file.
             File jar = new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 
@@ -48,10 +50,7 @@ public class App {
 
             //Start the server.
             tomcat.start();
-            tomcat.getServer().await();
-
-            PlayerDatabaseInterface.getInstance();
-            
+            tomcat.getServer().await();            
         } catch (Exception e) {
             e.printStackTrace();
         }
