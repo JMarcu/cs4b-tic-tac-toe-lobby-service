@@ -28,8 +28,6 @@ public class App {
         tomcat.setPort(Integer.parseInt(webPort));
 
         try {
-            PlayerDatabaseInterface.getInstance();
-
             //Get a reference to the service's jar file.
             File jar = new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 

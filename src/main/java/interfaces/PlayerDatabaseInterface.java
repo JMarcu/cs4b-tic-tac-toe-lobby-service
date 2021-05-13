@@ -22,7 +22,7 @@ public class PlayerDatabaseInterface {
         // constructor code
         try{
         Connection conn = getConn();
-        System.out.print(conn);
+        System.out.println(conn);
         Statement stmt = conn.createStatement();
 
         //create LoginCredentials / RefreshTokens table
@@ -34,7 +34,7 @@ public class PlayerDatabaseInterface {
         stmt.executeUpdate(sql);
 
         //create Game History table
-        sql = "CREATE TABLE IF NOT EXISTS GameHistory (gameId INTEGER not NULL, playerOneId VARCHAR(255) not NULL, playerTwoId VARCHAR(255) not NULL, status INTEGER not NULL, winner VARCHAR(255) not NULL, start BIGINT not NULL, end BIGINT not NULL, move VARCHAR(255) not NULL, spectators VARCHAR(255) not NULL, PRIMARY KEY (gameId), FOREIGN KEY (playerOneId) REFERENCES Players(playerId), FOREIGN KEY (playerTwoId) REFERENCES Players(playerId), FOREIGN KEY (winner) REFERENCES Players(playerId))";
+        sql = "CREATE TABLE IF NOT EXISTS GameHistory (gameId INTEGER not NULL, playerOneId VARCHAR(255) not NULL, playerTwoId VARCHAR(255) not NULL, gameStatus INTEGER not NULL, winner VARCHAR(255) not NULL, gameStart BIGINT not NULL, gameEnd BIGINT not NULL, gameMove VARCHAR(255) not NULL, spectators VARCHAR(255) not NULL, PRIMARY KEY (gameId), FOREIGN KEY (playerOneId) REFERENCES Players(playerId), FOREIGN KEY (playerTwoId) REFERENCES Players(playerId), FOREIGN KEY (winner) REFERENCES Players(playerId))";
         stmt.executeUpdate(sql);
 
         //close everything
