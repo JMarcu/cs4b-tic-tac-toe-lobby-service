@@ -22,7 +22,6 @@ public class PlayerDatabaseInterface {
         // constructor code
         try{
         Connection conn = getConn();
-        System.out.println(conn);
         Statement stmt = conn.createStatement();
 
         //create LoginCredentials / RefreshTokens table
@@ -33,8 +32,8 @@ public class PlayerDatabaseInterface {
         sql = "CREATE TABLE IF NOT EXISTS Players (playerId VARCHAR(255) not NULL, markerShape VARCHAR(255) not NULL, markerColor VARCHAR(255) not NULL, username VARCHAR(255) not NULL, PRIMARY KEY (playerId), FOREIGN KEY (username) REFERENCES LoginCredentials(username))";
         stmt.executeUpdate(sql);
 
-        //create Game History table
-        sql = "CREATE TABLE IF NOT EXISTS GameHistory (gameId INTEGER not NULL, playerOneId VARCHAR(255) not NULL, playerTwoId VARCHAR(255) not NULL, gameStatus INTEGER not NULL, winner VARCHAR(255) not NULL, gameStart BIGINT not NULL, gameEnd BIGINT not NULL, gameMove VARCHAR(255) not NULL, spectators VARCHAR(255) not NULL, PRIMARY KEY (gameId), FOREIGN KEY (playerOneId) REFERENCES Players(playerId), FOREIGN KEY (playerTwoId) REFERENCES Players(playerId), FOREIGN KEY (winner) REFERENCES Players(playerId))";
+        //create Game History table -------------- MOVE
+        sql = "CREATE TABLE IF NOT EXISTS GameHistory (gameId INTEGER not NULL, playerOneId VARCHAR(255) not NULL, playerTwoId VARCHAR(255) not NULL, gameStatus INTEGER not NULL, winner VARCHAR(255) not NULL, gameStart BIGINT not NULL, gameEnd BIGINT not NULL, moves VARCHAR(255) not NULL, spectators VARCHAR(255) not NULL, PRIMARY KEY (gameId), FOREIGN KEY (playerOneId) REFERENCES Players(playerId), FOREIGN KEY (playerTwoId) REFERENCES Players(playerId), FOREIGN KEY (winner) REFERENCES Players(playerId))";
         stmt.executeUpdate(sql);
 
         //close everything
