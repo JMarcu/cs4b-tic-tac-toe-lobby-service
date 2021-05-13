@@ -115,6 +115,7 @@
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
         <version>42.2.20</version>
+    </dependency>
     <!-- JWT -->
     <dependency>
       <groupId>com.auth0</groupId>
