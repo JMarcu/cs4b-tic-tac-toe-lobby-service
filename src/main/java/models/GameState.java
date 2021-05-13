@@ -255,6 +255,14 @@ public class GameState implements Publisher<GameState.Patch>  {
      */
     public Player getWinner() { return this.winner; }
 
+    public void setPlayerOne(Player player){
+        players = players.setAt0(player);
+    }
+
+    public void setPlayerTwo(Player player){
+        players = players.setAt1(player);
+    }
+
     /*==========================================================================================================
      * GAME LOGIC - methods for controlling the flow of the game
      *==========================================================================================================*/
