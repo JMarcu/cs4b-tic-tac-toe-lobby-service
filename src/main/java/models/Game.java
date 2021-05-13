@@ -8,22 +8,24 @@ public class Game {
     
     private long start;
     private long end;
-    private List<Integer> players; // takes PlayerIds instead of Players, so Integer
+    private List<String> spectators; // takes PlayerIds instead of Players, so Integer
     private List<Pair<Integer,Integer>> moves;
-    private Integer winner;
+    private String winner;
     private Integer gameId;
+    private Pair<String,String> players;
 
-    public Game(List<Integer> people, Integer gameNumber){ // probably change what it takes in
+    public Game(Pair<String,String> people, Integer gameNumber){ // probably change what it takes in
         start = System.currentTimeMillis();
         end = -1;
         players = people;
-        winner = -1;
+        winner = "";
         gameId = gameNumber;
         moves = new ArrayList<Pair<Integer,Integer>>();
+        spectators = new ArrayList<String>();
     }
 
-    public void addPlayer(Integer player){
-        players.add(player);
+    public void addSpecator(String spectator){
+        spectators.add(spectator);
     }
 
     public void setEnd(){
@@ -34,11 +36,11 @@ public class Game {
         moves.add(move);
     }
 
-    public void setWinner(Integer winnerId){
+    public void setWinner(String winnerId){
         winner = winnerId;
     }
 
-    public Integer getWinner(){
+    public String getWinner(){
         return winner;
     }
 
@@ -58,7 +60,11 @@ public class Game {
         return moves;
     }
 
-    public List<Integer> getPlayers(){
-        return players; // first player, second player, viewers
+    public Pair<String,String> getPlayers(){
+        return players; // first player, second player
+    }
+
+    public List<String> getSpectators(){
+        return spectators;
     }
 }
