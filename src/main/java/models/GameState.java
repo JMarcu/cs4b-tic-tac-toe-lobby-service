@@ -255,6 +255,14 @@ public class GameState implements Publisher<GameState.Patch>  {
      */
     public Player getWinner() { return this.winner; }
 
+    public void setPlayerOne(Player player){
+        players = players.setAt0(player);
+    }
+
+    public void setPlayerTwo(Player player){
+        players = players.setAt1(player);
+    }
+
     /*==========================================================================================================
      * GAME LOGIC - methods for controlling the flow of the game
      *==========================================================================================================*/
@@ -282,7 +290,7 @@ public class GameState implements Publisher<GameState.Patch>  {
      * @throws IllegalArgumentException Thrown if: either x or y does not satisfy 0 <= n < {@link GRID_SIZE}, or  
      * the specified cell is not empty.
      */
-    public void setCell(int x, int y) {
+    public void setCell(int x, int y) throws IllegalArgumentException {
         if(x < 0 || x > 2 || y < 0 || y > 2){
             throw new IllegalArgumentException("Cell coordinates must be greater than or equal to 0 and less than " + GRID_SIZE);
         } else if(grid[x][y] != null){
