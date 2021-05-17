@@ -55,7 +55,7 @@ public class GameDatabaseInterface {
 
     private Connection getConn() throws URISyntaxException, SQLException
     {
-        String dbUrl = System.getenv("HEROKU_POSTGRESQL_CYAN_URL");
+        String dbUrl = System.getenv("JDBC_DATABASE_URL");
         return DriverManager.getConnection(dbUrl);
     }
 
