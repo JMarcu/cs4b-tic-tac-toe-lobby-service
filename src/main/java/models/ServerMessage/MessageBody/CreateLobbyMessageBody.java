@@ -5,6 +5,7 @@ public class CreateLobbyMessageBody {
     private String name;
 
     public CreateLobbyMessageBody(String jwt, String name){
+        this.jwt = jwt;
         this.name = name;
     }
 
