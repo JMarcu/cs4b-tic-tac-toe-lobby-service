@@ -114,7 +114,7 @@ public class GameState implements Publisher<GameState.Patch>  {
     private Pair<Player, Player> players;
 
     /** A {@link java.util.concurrent.Flow.Publisher} implementation that handles our subscriptions. */
-    private SubmissionPublisher<Patch> publisher;
+    private transient SubmissionPublisher<Patch> publisher;
 
     /**
      * Some game modes requires additional configuration, and that is stored here. For instance, {@link GameMode.BEST_OF_X}
