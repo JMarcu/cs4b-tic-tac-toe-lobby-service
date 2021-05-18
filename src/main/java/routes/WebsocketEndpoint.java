@@ -1,8 +1,12 @@
 package routes;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import interfaces.Sender;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
+
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -24,7 +28,14 @@ import services.MessageExecutor;
 
 @ServerEndpoint(value = "/ws")
 public class WebsocketEndpoint implements Sender {
+    Gson gson;
     Session session;
+
+    public WebsocketEndpoint(){
+        this.gson = new GsonBuilder()
+            .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+            .create();
+    }
 
     @OnOpen
     public void onOpen(Session session) {
@@ -40,7 +51,6 @@ public class WebsocketEndpoint implements Sender {
     @OnMessage
     public void onMessage(String messageString) {
         System.out.println("Message Received: " + messageString);
-        Gson gson = new Gson();
         Message message = gson.fromJson(messageString, Message.class);
         try{
             switch(message.getType()){
@@ -102,7 +112,7 @@ public class WebsocketEndpoint implements Sender {
     }
 
     public void send(Message message) throws IOException{
-        String msg = new Gson().toJson(message);
+        String msg = gson.toJson(message);
         System.out.println("Sending Message: " + msg);
         session.getBasicRemote().sendText(msg);
     }
