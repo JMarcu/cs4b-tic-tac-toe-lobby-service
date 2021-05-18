@@ -2,8 +2,12 @@ package models.ServerMessage.MessageHandler;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import interfaces.Sender;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
+
 import models.GameServer;
 import models.Player;
 import models.ServerMessage.Message;
@@ -28,7 +32,15 @@ public class CreateLobbyHandler implements Runnable{
 
         if(JWTService.validate(msg.getJWT())){
             DecodedJWT decodedJwt = JWTService.decode(msg.getJWT());
-            player = new Gson().fromJson(decodedJwt.getClaim("player").asString(), Player.class);
+
+            Gson gson = new GsonBuilder()
+                .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+                .create();
+
+            String playerJson = decodedJwt.getClaim("player").asString();
+            System.out.println("Player Json: " + playerJson);
+            player = gson.fromJson(playerJson, Player.class);
+            System.out.println("Player: " + player);
 
             GameServer gameServer = new GameServer(msg.getName());
             GameServerService.getInstance().addGameServer(gameServer);
