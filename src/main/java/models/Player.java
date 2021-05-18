@@ -3,7 +3,6 @@ package models;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.SubmissionPublisher;
-import java.io.Serializable;
 import java.util.UUID;
 import javafx.scene.paint.Color;
 
@@ -11,15 +10,13 @@ import javafx.scene.paint.Color;
  * Models a player in the game.
  * @author James Marcu
  */
-public class Player implements Serializable {
+public class Player {
     /************************************************************************************************************
      * NESTED OBJECTS
      ************************************************************************************************************/
 
     /** Describes a differential and atomic update to the player's state. Objects of this type are dispatched to subscribers */
-    public static class Patch implements Serializable {
-        private static final long serialVersionUID = 1L;
-
+    public static class Patch {
         /** The color of the player's marker. */
         protected SerializeableColor color;
 
@@ -93,8 +90,6 @@ public class Player implements Serializable {
         this.publisher = new SubmissionPublisher<Player.Patch>(Runnable::run, Flow.defaultBufferSize());
         this.shape = shape == null ? MarkerShape.X : shape;
     }
-
-    private static final long serialVersionUID = 1L;
     
     /*==========================================================================================================
      * ACCESSORS & MUTATORS
