@@ -102,6 +102,8 @@ public class WebsocketEndpoint implements Sender {
     }
 
     public void send(Message message) throws IOException{
-        session.getBasicRemote().sendText(new Gson().toJson(message));
+        String msg = new Gson().toJson(message);
+        System.out.println("Sending Message: " + msg);
+        session.getBasicRemote().sendText(msg);
     }
 }

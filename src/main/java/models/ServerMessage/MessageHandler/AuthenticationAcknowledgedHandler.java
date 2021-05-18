@@ -20,7 +20,9 @@ public class AuthenticationAcknowledgedHandler implements Runnable {
     public void run(){
         try {
             final ArrayList<Lobby> lobbies = GameServerService.getInstance().listAsLobbies();
+            System.out.println("Lobbies: " + lobbies);
             final LobbyListMessageBody lobbyListBody = new LobbyListMessageBody(lobbies);
+            System.out.println("lobbyListBody: " + lobbyListBody);
             sender.send(new Message(lobbyListBody, MessageType.LOBBY_LIST));
         } catch (IOException e) {
             e.printStackTrace();
