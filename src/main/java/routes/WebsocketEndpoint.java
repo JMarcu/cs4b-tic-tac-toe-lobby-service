@@ -1,25 +1,17 @@
 package routes;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.reflect.TypeToken;
 import interfaces.Sender;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.Session;
-import models.Player;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageBody.AuthenticationRequestMessageBody;
 import models.ServerMessage.MessageBody.ConnectionMessageBody;
@@ -31,7 +23,6 @@ import models.ServerMessage.MessageHandler.ConnectionHandler;
 import models.ServerMessage.MessageHandler.CreateLobbyHandler;
 import models.ServerMessage.MessageHandler.LobbyListHandler;
 import models.ServerMessage.MessageHandler.MoveHandler;
-import org.javatuples.Pair;
 import services.MessageExecutor;
 
 @ServerEndpoint(value = "/ws")
@@ -40,36 +31,23 @@ public class WebsocketEndpoint implements Sender {
     Session session;
 
     public WebsocketEndpoint(){
-        final JsonSerializer<Pair<Player, Player>> playerPairSerializer = new JsonSerializer<Pair<Player, Player>>(){
-            @Override
-            public JsonElement serialize(Pair<Player, Player> src, Type typeOfSrc, JsonSerializationContext context) {
-                JsonArray jsonPair = new JsonArray();
-                jsonPair.add(WebsocketEndpoint.this.gson.toJson(src.getValue0()));
-                jsonPair.add(WebsocketEndpoint.this.gson.toJson(src.getValue1()));
-                return jsonPair;
-            }
-            
-        };
-
-        final JsonDeserializer<Pair<Player, Player>> playerPairDerializer = new JsonDeserializer<Pair<Player, Player>>(){
-            @Override
-            public Pair<Player, Player> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return Pair.fromArray(
-                    WebsocketEndpoint.this.gson.fromJson(json, typeOfT)
-                );
-            }
-        };
-        
         this.gson = new GsonBuilder()
             .excludeFieldsWithModifiers(Modifier.TRANSIENT)
-            .registerTypeAdapter(
-                new TypeToken<Pair<Player, Player>>(){}.getType(), 
-                playerPairSerializer
-            )
-            .registerTypeAdapter(
-                new TypeToken<Pair<Player, Player>>(){}.getType(), 
-                playerPairDerializer
-            )
+            .setExclusionStrategies(new ExclusionStrategy(){
+                @Override
+                public boolean shouldSkipField(FieldAttributes f){
+                    boolean exclude = false;
+                    try{
+                        exclude = f.getName().equals("serialVersionUID");
+                    } catch(Exception err){ }
+                    return exclude;
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return false;
+                }
+            })
             .create();
     }
 
