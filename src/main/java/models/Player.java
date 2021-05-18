@@ -62,7 +62,7 @@ public class Player {
     private String name;
 
     /** A {@link java.util.concurrent.Flow.Publisher} implementation that handles our subscriptions. */
-    private SubmissionPublisher<Player.Patch> publisher;
+    private transient SubmissionPublisher<Player.Patch> publisher;
 
     /** The shape of the player's marker. */
     private MarkerShape shape;
