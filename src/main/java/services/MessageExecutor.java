@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class MessageExecutor {
+public class MessageExecutor extends Thread{
     private static MessageExecutor instance;
 
     private ExecutorService executor;
@@ -16,15 +16,20 @@ public class MessageExecutor {
     }
 
     public void queueMessageHandler(Runnable handler) throws InterruptedException{
-        queue.put(handler);
+        // queue.put(handler);
+        executor.execute(handler);
     }
     
-    public void run() throws InterruptedException{
-        while(true){
-            if(!queue.isEmpty()){
-                executor.execute(queue.take());
-            }
-        }
+    public void run() {
+        // while(true){
+        //     if(!queue.isEmpty()){
+        //         try {
+        //             executor.execute(queue.take());
+        //         } catch (InterruptedException e) {
+        //             e.printStackTrace();
+        //         }
+        //     }
+        // }
     }
 
    /** 

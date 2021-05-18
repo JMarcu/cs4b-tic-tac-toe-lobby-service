@@ -6,12 +6,14 @@ import interfaces.GameDatabaseInterface;
 import interfaces.PlayerDatabaseInterface;
 import models.Player;
 import models.PlayerData;
+import services.MessageExecutor;
 
 public class App {
     private final String SERVICE_NAME = "lobby-service";
     
     public static void main(String[] args) throws Exception {
         final App app = new App();
+        MessageExecutor.getInstance().start();
         app.launchServer();
     }
 
@@ -28,8 +30,6 @@ public class App {
         tomcat.setPort(Integer.parseInt(webPort));
 
         try {
-            PlayerDatabaseInterface.getInstance();
-
             //Get a reference to the service's jar file.
             File jar = new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 

@@ -39,6 +39,7 @@ public class WebsocketEndpoint implements Sender {
 
     @OnMessage
     public void onMessage(String messageString) {
+        System.out.println("Message Received: " + messageString);
         Gson gson = new Gson();
         Message message = gson.fromJson(messageString, Message.class);
         try{
