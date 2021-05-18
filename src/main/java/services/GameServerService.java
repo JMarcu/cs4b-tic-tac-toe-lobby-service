@@ -33,7 +33,7 @@ public class GameServerService {
     public ArrayList<Lobby> listAsLobbies(){
         final ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
         lobbyMap.values().forEach((GameServer gameServer) -> {
-            lobbies.add((Lobby) gameServer);
+            lobbies.add(gameServer.toLobby());
         });
         return lobbies;
     }

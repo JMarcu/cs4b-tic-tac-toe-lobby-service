@@ -28,6 +28,10 @@ public class GameServer extends Lobby {
         this.subscribeToGameState();
     }
 
+    public Lobby toLobby(){
+        return new Lobby(id, name, players, status);
+    }
+
     public GameState getGameState(){
         return gameState;
     }
