@@ -54,6 +54,7 @@ public class GameServerService {
 
     public boolean removeClient(UUID playerId){
         if(this.clients.containsKey(playerId)){
+            System.out.println("Removing client " + playerId);
             this.clients.remove(playerId);
             return true;
         } else{
@@ -65,6 +66,7 @@ public class GameServerService {
         final ArrayList<Lobby> lobbies = new ArrayList<Lobby>(lobbyMap.values());
         lobbies.forEach((Lobby lobby) -> {
             if(lobby.hasPlayer(player.getUuid())){
+                System.out.println("Removing player " + player.getUuid() + " from lobby " + lobby.getId());
                 removePlayer(lobby.getId(), player, sender);
             }
         });

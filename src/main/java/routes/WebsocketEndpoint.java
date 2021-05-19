@@ -65,12 +65,15 @@ public class WebsocketEndpoint implements Sender {
 
     @OnClose
     public void onClose(Session session) {
+        System.out.println("close");
         DecodedJWT decodedJwt = JWTService.decode(jwt);
+        System.out.println("decodedJwt: " + decodedJwt);
         String playerJson = decodedJwt.getClaim("player").asString();
+        System.out.println("playerJson: " + playerJson);
         Player player = gson.fromJson(playerJson, Player.class);
+        System.out.println("player: " + player);
         GameServerService.getInstance().removePlayer(player, this);
         GameServerService.getInstance().removeClient(player.getUuid());
-        System.out.println("close");
     }
 
     @OnMessage
