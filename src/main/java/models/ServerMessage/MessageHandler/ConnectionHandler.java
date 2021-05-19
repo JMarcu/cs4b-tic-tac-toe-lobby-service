@@ -49,7 +49,10 @@ public class ConnectionHandler implements Runnable{
             }
 
             if(success){
-                PlayerJoinedMessageBody sanitizedBody = new PlayerJoinedMessageBody(msg.getLobbyId(), player);
+                int position = gameServer.getPlayers().getValue0().getUuid().equals(player.getUuid())
+                    ? 0
+                    : 1;
+                PlayerJoinedMessageBody sanitizedBody = new PlayerJoinedMessageBody(msg.getLobbyId(), player, position);
                 Message broadcastMsg = new Message(sanitizedBody, MessageType.PLAYER_JOINED);
                 GameServerService.getInstance().broadcast(msg.getLobbyId(), broadcastMsg, msg.getPlayerId());
     
