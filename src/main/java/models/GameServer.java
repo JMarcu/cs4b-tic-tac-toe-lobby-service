@@ -54,12 +54,14 @@ public class GameServer extends Lobby {
     @Override
     public boolean removePlayer(Player player){
         System.out.println("Removing Player From Lobby");
-        if(this.players.getValue0() != null && this.players.getValue0().equals(player)){
+        System.out.println("Player One: " + players.getValue0().getUuid());
+        System.out.println("Player Two: " + players.getValue1().getUuid());
+        if(this.players.getValue0() != null && this.players.getValue0().getUuid().equals(player.getUuid())){
             System.out.println("Player was Player One");
             players = new Pair<Player, Player>(null, players.getValue1());
             gameState.setPlayerOne(null);
             return true;
-        } else if(this.players.getValue1() != null && this.players.getValue1().equals(player)){
+        } else if(this.players.getValue1() != null && this.players.getValue1().getUuid().equals(player.getUuid())){
             System.out.println("Player was Player Two");
             players = new Pair<Player, Player>(players.getValue0(), null);
             gameState.setPlayerTwo(null);
