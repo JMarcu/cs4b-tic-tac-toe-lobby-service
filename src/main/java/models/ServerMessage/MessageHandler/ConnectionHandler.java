@@ -11,6 +11,7 @@ import models.Player;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageBody.ConnectionMessageBody;
 import models.ServerMessage.MessageBody.ConnectionSuccessMessageBody;
+import models.ServerMessage.MessageBody.PlayerJoinedMessageBody;
 import models.ServerMessage.MessageType;
 import services.GameServerService;
 import services.JWTService;
@@ -48,8 +49,8 @@ public class ConnectionHandler implements Runnable{
             }
 
             if(success){
-                ConnectionMessageBody sanitizedBody = new ConnectionMessageBody("", msg.getLobbyId(), msg.getPlayerId(), msg.getType());
-                Message broadcastMsg = new Message(sanitizedBody, MessageType.CONNECTION);
+                PlayerJoinedMessageBody sanitizedBody = new PlayerJoinedMessageBody(msg.getLobbyId(), player);
+                Message broadcastMsg = new Message(sanitizedBody, MessageType.PLAYER_JOINED);
                 GameServerService.getInstance().broadcast(msg.getLobbyId(), broadcastMsg, msg.getPlayerId());
     
                 ConnectionSuccessMessageBody body;
