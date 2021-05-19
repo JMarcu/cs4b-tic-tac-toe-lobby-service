@@ -11,6 +11,7 @@ import java.lang.reflect.Modifier;
 import models.GameServer;
 import models.Player;
 import models.ServerMessage.Message;
+import models.ServerMessage.MessageBody.ConnectionMessageBody;
 import models.ServerMessage.MessageBody.ConnectionSuccessMessageBody;
 import models.ServerMessage.MessageBody.CreateLobbyMessageBody;
 import models.ServerMessage.MessageType;
@@ -44,7 +45,11 @@ public class CreateLobbyHandler implements Runnable{
             GameServerService.getInstance().addGameServer(gameServer);
             GameServerService.getInstance().addPlayer(gameServer.getId(), player, sender);
 
-            ConnectionSuccessMessageBody body = new ConnectionSuccessMessageBody(gameServer.getGameState());
+            ConnectionSuccessMessageBody body = new ConnectionSuccessMessageBody(
+                gameServer.getGameState(), 
+                gameServer.getId(),
+                ConnectionMessageBody.Type.JOIN
+            );
             message = new Message(body, MessageType.CONNECTION_SUCCESS);
         } else{
             System.err.println("Invalid JWT in Connection Request :: " + msg.getJWT());
