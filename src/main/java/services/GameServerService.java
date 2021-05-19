@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import interfaces.Sender;
 import models.GameServer;
@@ -68,6 +67,7 @@ public class GameServerService {
             if(lobby.hasPlayer(player.getUuid())){
                 System.out.println("Removing player " + player.getUuid() + " from lobby " + lobby.getId());
                 removePlayer(lobby.getId(), player, sender);
+                System.out.println("Lobby Players: " + lobby.getPlayers());
             }
         });
         return lobbies.size() > 0;
