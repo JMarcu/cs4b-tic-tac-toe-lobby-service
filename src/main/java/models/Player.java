@@ -193,6 +193,6 @@ public class Player {
      * @return Returns true if the two objects represent the same player (i.e. share a UUID), returns false otherwise.
      */
     public boolean equals(Player otherPlayer){
-        return id == otherPlayer.id;
+        return id == otherPlayer.getUuid();
     }
 }
