@@ -53,16 +53,19 @@ public class ConnectionHandler implements Runnable{
             }
 
             if(success){
-    
                 ConnectionSuccessMessageBody body;
                 if(msg.getType() == ConnectionMessageBody.Type.JOIN){
                     PlayerJoinedMessageBody joinBody = new PlayerJoinedMessageBody(msg.getLobbyId(), player, position);
                     Message broadcastMsg = new Message(joinBody, MessageType.PLAYER_JOINED);
                     GameServerService.getInstance().broadcast(msg.getLobbyId(), broadcastMsg, msg.getPlayerId());
 
-                    body = new ConnectionSuccessMessageBody(gameServer.getGameState());
+                    body = new ConnectionSuccessMessageBody(
+                        gameServer.getGameState(), 
+                        gameServer.getId(),
+                        msg.getType()
+                    );
                 } else{
-                    body = new ConnectionSuccessMessageBody(null);
+                    body = new ConnectionSuccessMessageBody(null, gameServer.getId(), msg.getType());
                 }
                 message = new Message(body, MessageType.CONNECTION_SUCCESS);
             } else{
