@@ -41,7 +41,7 @@ public class ConnectionHandler implements Runnable{
 
         if(authorized){
             GameServer gameServer = GameServerService.getInstance().getGameServer(msg.getLobbyId());
-            int position;
+            int position = 0;
             boolean success;
             if(msg.getType() == ConnectionMessageBody.Type.JOIN){
                 success = GameServerService.getInstance().addPlayer(msg.getLobbyId(), player, sender);
@@ -49,9 +49,6 @@ public class ConnectionHandler implements Runnable{
                    ? 0
                    : 1;
             } else{
-                position = gameServer.getPlayers().getValue0().getUuid().equals(player.getUuid())
-                   ? 0
-                   : 1;
                 success = GameServerService.getInstance().removePlayer(msg.getLobbyId(), player, sender);
             }
 
@@ -65,10 +62,6 @@ public class ConnectionHandler implements Runnable{
 
                     body = new ConnectionSuccessMessageBody(gameServer.getGameState());
                 } else{
-                    PlayerLeaveMessageBody leaveBody = new PlayerLeaveMessageBody(msg.getLobbyId(), player.getUuid(), position);
-                    Message broadcastMsg = new Message(leaveBody, MessageType.PLAYER_LEFT);
-                    GameServerService.getInstance().broadcast(msg.getLobbyId(), broadcastMsg, msg.getPlayerId());
-
                     body = new ConnectionSuccessMessageBody(null);
                 }
                 message = new Message(body, MessageType.CONNECTION_SUCCESS);

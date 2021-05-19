@@ -11,6 +11,8 @@ import models.GameServer;
 import models.Lobby;
 import models.Player;
 import models.ServerMessage.Message;
+import models.ServerMessage.MessageType;
+import models.ServerMessage.MessageBody.PlayerLeaveMessageBody;
 
 public class GameServerService {
     private static GameServerService instance;
@@ -65,25 +67,31 @@ public class GameServerService {
         final ArrayList<Lobby> lobbies = new ArrayList<Lobby>(lobbyMap.values());
         lobbies.forEach((Lobby lobby) -> {
             if(lobby.hasPlayer(player.getUuid())){
-                System.out.println("Removing player " + player.getUuid() + " from lobby " + lobby.getId());
-                lobby.removePlayer(player);
-                if(lobby.getPlayers().getValue0() == null && lobby.getPlayers().getValue1() == null){
-                    this.lobbyMap.remove(lobby.getId());
-                }
-                System.out.println("Lobby Players: " + lobby.getPlayers());
+                removePlayer(lobby.getId(), player, sender);
             }
         });
         return lobbies.size() > 0;
     }
 
     public boolean removePlayer(UUID lobbyId, Player player, Sender sender){
+        int position =this.lobbyMap.get(lobbyId).getPlayers().getValue0().getUuid().equals(player.getUuid())
+            ? 0
+            : 1;
+        
         boolean success =  this.lobbyMap.get(lobbyId).removePlayer(player);
+
         if(
             this.lobbyMap.get(lobbyId).getPlayers().getValue0() == null &&
             this.lobbyMap.get(lobbyId).getPlayers().getValue1() == null
         ){
             this.lobbyMap.remove(lobbyId);
         }
+
+        if(success){
+            PlayerLeaveMessageBody body = new PlayerLeaveMessageBody(lobbyId, player.getUuid(), position);
+            broadcast(lobbyId, new Message(body, MessageType.PLAYER_LEFT));
+        }
+
         return success;
     }
 
