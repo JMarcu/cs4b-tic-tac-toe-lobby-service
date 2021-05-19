@@ -69,6 +69,7 @@ public class WebsocketEndpoint implements Sender {
         String playerJson = decodedJwt.getClaim("player").asString();
         Player player = gson.fromJson(playerJson, Player.class);
         GameServerService.getInstance().removePlayer(player, this);
+        GameServerService.getInstance().removeClient(player.getUuid());
         System.out.println("close");
     }
 

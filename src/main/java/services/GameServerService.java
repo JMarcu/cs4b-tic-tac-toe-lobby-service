@@ -52,6 +52,15 @@ public class GameServerService {
         return success;
     }
 
+    public boolean removeClient(UUID playerId){
+        if(this.clients.containsKey(playerId)){
+            this.clients.remove(playerId);
+            return true;
+        } else{
+            return false;
+        }
+    }
+
     public boolean removePlayer(Player player, Sender sender){
         final ArrayList<Lobby> lobbies = new ArrayList<Lobby>(lobbyMap.values());
         lobbies.forEach((Lobby lobby) -> {
@@ -64,8 +73,11 @@ public class GameServerService {
 
     public boolean removePlayer(UUID lobbyId, Player player, Sender sender){
         boolean success =  this.lobbyMap.get(lobbyId).removePlayer(player);
-        if(success){
-            this.clients.put(player.getUuid(), sender);
+        if(
+            this.lobbyMap.get(lobbyId).getPlayers().getValue0() == null &&
+            this.lobbyMap.get(lobbyId).getPlayers().getValue1() == null
+        ){
+            this.lobbyMap.remove(lobbyId);
         }
         return success;
     }
