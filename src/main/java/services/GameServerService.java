@@ -66,7 +66,10 @@ public class GameServerService {
         lobbies.forEach((Lobby lobby) -> {
             if(lobby.hasPlayer(player.getUuid())){
                 System.out.println("Removing player " + player.getUuid() + " from lobby " + lobby.getId());
-                removePlayer(lobby.getId(), player, sender);
+                lobby.removePlayer(player);
+                if(lobby.getPlayers().getValue0() == null && lobby.getPlayers().getValue1() == null){
+                    this.lobbyMap.remove(lobby.getId());
+                }
                 System.out.println("Lobby Players: " + lobby.getPlayers());
             }
         });
