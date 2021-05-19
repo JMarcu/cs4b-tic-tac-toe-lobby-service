@@ -1,5 +1,6 @@
 package routes;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -12,6 +13,8 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.Session;
+
+import models.Player;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageBody.AuthenticationRequestMessageBody;
 import models.ServerMessage.MessageBody.ConnectionMessageBody;
@@ -23,11 +26,14 @@ import models.ServerMessage.MessageHandler.ConnectionHandler;
 import models.ServerMessage.MessageHandler.CreateLobbyHandler;
 import models.ServerMessage.MessageHandler.LobbyListHandler;
 import models.ServerMessage.MessageHandler.MoveHandler;
+import services.GameServerService;
+import services.JWTService;
 import services.MessageExecutor;
 
 @ServerEndpoint(value = "/ws")
 public class WebsocketEndpoint implements Sender {
     Gson gson;
+    String jwt;
     Session session;
 
     public WebsocketEndpoint(){
@@ -59,6 +65,10 @@ public class WebsocketEndpoint implements Sender {
 
     @OnClose
     public void onClose(Session session) {
+        DecodedJWT decodedJwt = JWTService.decode(jwt);
+        String playerJson = decodedJwt.getClaim("player").asString();
+        Player player = gson.fromJson(playerJson, Player.class);
+        GameServerService.getInstance().removePlayer(player, this);
         System.out.println("close");
     }
 
@@ -74,7 +84,8 @@ public class WebsocketEndpoint implements Sender {
                     break;
                 case AUTHENTICATION_REQUEST:
                     AuthenticationRequestMessageBody authRequestBody = gson.fromJson(message.getBody(), AuthenticationRequestMessageBody.class);
-                    AuthenticationRequestHandler authRequestHandler = new AuthenticationRequestHandler(authRequestBody, this, session); 
+                    jwt = authRequestBody.getToken();
+                    AuthenticationRequestHandler authRequestHandler = new AuthenticationRequestHandler(authRequestBody, this, session);
                     MessageExecutor.getInstance().queueMessageHandler(authRequestHandler);
                     break;
                 case AUTHENTICATION_RESULT:

@@ -38,9 +38,7 @@ public class CreateLobbyHandler implements Runnable{
                 .create();
 
             String playerJson = decodedJwt.getClaim("player").asString();
-            System.out.println("Player Json: " + playerJson);
             player = gson.fromJson(playerJson, Player.class);
-            System.out.println("Player: " + player);
 
             GameServer gameServer = new GameServer(msg.getName());
             GameServerService.getInstance().addGameServer(gameServer);

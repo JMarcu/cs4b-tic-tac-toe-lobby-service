@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
+
 import interfaces.Sender;
 import models.GameServer;
 import models.Lobby;
@@ -48,6 +50,16 @@ public class GameServerService {
             this.clients.put(player.getUuid(), sender);
         }
         return success;
+    }
+
+    public boolean removePlayer(Player player, Sender sender){
+        final ArrayList<Lobby> lobbies = new ArrayList<Lobby>(lobbyMap.values());
+        lobbies.forEach((Lobby lobby) -> {
+            if(lobby.hasPlayer(player.getUuid())){
+                removePlayer(lobby.getId(), player, sender);
+            }
+        });
+        return lobbies.size() > 0;
     }
 
     public boolean removePlayer(UUID lobbyId, Player player, Sender sender){

@@ -41,6 +41,11 @@ public class Lobby {
         }
     }
 
+    public boolean hasPlayer(UUID playerId){
+        return (this.players.getValue0() != null && this.players.getValue0().getUuid().equals(playerId)) ||
+            (this.players.getValue1() != null && this.players.getValue1().getUuid().equals(playerId));
+    }
+
     public boolean removePlayer(Player player){
         if(players.getValue0().getUuid().compareTo(player.getUuid()) == 0){
             players = new Pair<Player, Player>(null, players.getValue1());
