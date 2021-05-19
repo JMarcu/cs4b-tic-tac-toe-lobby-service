@@ -16,6 +16,7 @@ public enum MessageType {
     LOGOUT_SUCCESS,
     MOVE,
     PLAYER_JOINED,
+    PLAYER_LEFT,
     PLAYER_PROPERTIES,
     REFRESH_SUCCESS,
     REFRESH_TOKEN,

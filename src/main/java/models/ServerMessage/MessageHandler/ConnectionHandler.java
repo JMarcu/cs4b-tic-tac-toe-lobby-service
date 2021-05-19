@@ -12,6 +12,7 @@ import models.ServerMessage.Message;
 import models.ServerMessage.MessageBody.ConnectionMessageBody;
 import models.ServerMessage.MessageBody.ConnectionSuccessMessageBody;
 import models.ServerMessage.MessageBody.PlayerJoinedMessageBody;
+import models.ServerMessage.MessageBody.PlayerLeaveMessageBody;
 import models.ServerMessage.MessageType;
 import services.GameServerService;
 import services.JWTService;
@@ -40,26 +41,34 @@ public class ConnectionHandler implements Runnable{
 
         if(authorized){
             GameServer gameServer = GameServerService.getInstance().getGameServer(msg.getLobbyId());
-
+            int position;
             boolean success;
             if(msg.getType() == ConnectionMessageBody.Type.JOIN){
                 success = GameServerService.getInstance().addPlayer(msg.getLobbyId(), player, sender);
+                position = gameServer.getPlayers().getValue0().getUuid().equals(player.getUuid())
+                   ? 0
+                   : 1;
             } else{
+                position = gameServer.getPlayers().getValue0().getUuid().equals(player.getUuid())
+                   ? 0
+                   : 1;
                 success = GameServerService.getInstance().removePlayer(msg.getLobbyId(), player, sender);
             }
 
             if(success){
-                int position = gameServer.getPlayers().getValue0().getUuid().equals(player.getUuid())
-                    ? 0
-                    : 1;
-                PlayerJoinedMessageBody sanitizedBody = new PlayerJoinedMessageBody(msg.getLobbyId(), player, position);
-                Message broadcastMsg = new Message(sanitizedBody, MessageType.PLAYER_JOINED);
-                GameServerService.getInstance().broadcast(msg.getLobbyId(), broadcastMsg, msg.getPlayerId());
     
                 ConnectionSuccessMessageBody body;
                 if(msg.getType() == ConnectionMessageBody.Type.JOIN){
+                    PlayerJoinedMessageBody joinBody = new PlayerJoinedMessageBody(msg.getLobbyId(), player, position);
+                    Message broadcastMsg = new Message(joinBody, MessageType.PLAYER_JOINED);
+                    GameServerService.getInstance().broadcast(msg.getLobbyId(), broadcastMsg, msg.getPlayerId());
+
                     body = new ConnectionSuccessMessageBody(gameServer.getGameState());
                 } else{
+                    PlayerLeaveMessageBody leaveBody = new PlayerLeaveMessageBody(msg.getLobbyId(), player.getUuid(), position);
+                    Message broadcastMsg = new Message(leaveBody, MessageType.PLAYER_LEFT);
+                    GameServerService.getInstance().broadcast(msg.getLobbyId(), broadcastMsg, msg.getPlayerId());
+
                     body = new ConnectionSuccessMessageBody(null);
                 }
                 message = new Message(body, MessageType.CONNECTION_SUCCESS);
