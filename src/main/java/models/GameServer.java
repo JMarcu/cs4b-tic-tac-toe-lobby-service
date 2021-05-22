@@ -130,6 +130,7 @@ public class GameServer extends Lobby {
                 gameState.getSinglePlayer(),
                 gameState.getSecondaryOption()
             );
+            this.subscribeToGameState();
             NewGameMessageBody body = new NewGameMessageBody(gameState);
             GameServerService.getInstance().broadcast(id, new Message(body, MessageType.NEW_GAME));
         }

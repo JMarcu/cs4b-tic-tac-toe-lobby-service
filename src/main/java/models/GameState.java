@@ -3,6 +3,7 @@ package models;
 import java.util.ArrayList;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
@@ -179,6 +180,7 @@ public class GameState implements Publisher<GameState.Patch>  {
         this.currentPlayerIndex = 0;
         this.emptyCells = GRID_SIZE * GRID_SIZE;
         this.grid = new Player[GRID_SIZE][GRID_SIZE];
+        this.publisher = new SubmissionPublisher<Patch>(Runnable::run, Flow.defaultBufferSize());
         this.victoryCounts = new ArrayList<Integer>();
         this.winner = null;
 
