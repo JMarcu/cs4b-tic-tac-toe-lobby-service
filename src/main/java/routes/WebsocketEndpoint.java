@@ -20,12 +20,14 @@ import models.ServerMessage.MessageBody.AuthenticationRequestMessageBody;
 import models.ServerMessage.MessageBody.ConnectionMessageBody;
 import models.ServerMessage.MessageBody.CreateLobbyMessageBody;
 import models.ServerMessage.MessageBody.MoveMessageBody;
+import models.ServerMessage.MessageBody.PlayAgainMessageBody;
 import models.ServerMessage.MessageHandler.AuthenticationAcknowledgedHandler;
 import models.ServerMessage.MessageHandler.AuthenticationRequestHandler;
 import models.ServerMessage.MessageHandler.ConnectionHandler;
 import models.ServerMessage.MessageHandler.CreateLobbyHandler;
 import models.ServerMessage.MessageHandler.LobbyListHandler;
 import models.ServerMessage.MessageHandler.MoveHandler;
+import models.ServerMessage.MessageHandler.PlayAgainHandler;
 import services.GameServerService;
 import services.JWTService;
 import services.MessageExecutor;
@@ -116,6 +118,11 @@ public class WebsocketEndpoint implements Sender {
                     MoveMessageBody moveBody = gson.fromJson(message.getBody(), MoveMessageBody.class);
                     MoveHandler moveHandler = new MoveHandler(moveBody);
                     MessageExecutor.getInstance().queueMessageHandler(moveHandler);
+                    break;
+                case PLAY_AGAIN:
+                    PlayAgainMessageBody playAgainBody = gson.fromJson(message.getBody(), PlayAgainMessageBody.class);
+                    PlayAgainHandler playAgainHandler = new PlayAgainHandler(playAgainBody);
+                    MessageExecutor.getInstance().queueMessageHandler(playAgainHandler);
                     break;
                 case PLAYER_PROPERTIES:
                     System.out.println("Received a PLAYER_PROPERTIES message :: this is likely an error, the lobby service does not process this message type.");

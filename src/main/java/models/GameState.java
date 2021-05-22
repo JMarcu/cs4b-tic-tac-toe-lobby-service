@@ -1,7 +1,6 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.SubmissionPublisher;
@@ -114,7 +113,7 @@ public class GameState implements Publisher<GameState.Patch>  {
     private Pair<Player, Player> players;
 
     /** A {@link java.util.concurrent.Flow.Publisher} implementation that handles our subscriptions. */
-    private transient SubmissionPublisher<Patch> publisher;
+    private transient  SubmissionPublisher<Patch> publisher;
 
     /**
      * Some game modes requires additional configuration, and that is stored here. For instance, {@link GameMode.BEST_OF_X}
@@ -180,14 +179,16 @@ public class GameState implements Publisher<GameState.Patch>  {
         this.currentPlayerIndex = 0;
         this.emptyCells = GRID_SIZE * GRID_SIZE;
         this.grid = new Player[GRID_SIZE][GRID_SIZE];
-        this.publisher = new SubmissionPublisher<Patch>(Runnable::run, Flow.defaultBufferSize());
-        this.status = Status.NEW;
         this.victoryCounts = new ArrayList<Integer>();
         this.winner = null;
 
         for(int i = 0; i < (GRID_SIZE * 2) + 2; i++){
             this.victoryCounts.add(0);
         }
+
+        this.status = singlePlayer || (players.getValue0() != null && players.getValue1() != null)
+            ? Status.IN_PROGRESS
+            : Status.NEW;
     }
     
     /*==========================================================================================================
@@ -257,10 +258,18 @@ public class GameState implements Publisher<GameState.Patch>  {
 
     public void setPlayerOne(Player player){
         players = players.setAt0(player);
+
+        if(this.players.getValue0() != null && this.players.getValue1() != null && status == Status.NEW){
+            this.status = Status.IN_PROGRESS;
+        }
     }
 
     public void setPlayerTwo(Player player){
         players = players.setAt1(player);
+
+        if(this.players.getValue0() != null && this.players.getValue1() != null && status == Status.NEW){
+            this.status = Status.IN_PROGRESS;
+        }
     }
 
     /*==========================================================================================================
@@ -371,17 +380,17 @@ public class GameState implements Publisher<GameState.Patch>  {
      * This publisher is functionally synchronous since all tasks are run on the current thread.
      *==========================================================================================================*/
     
-     /** Subscribe to receive updates whenever the game's state updates. */
+    /** Subscribe to receive updates whenever the game's state updates. */
     @Override
     public void subscribe(Subscriber<? super Patch> subscriber) {
         this.publisher.subscribe(subscriber);
     }
 
-     /**  Offers the patch to all subscribers. */
+    /**  Offers the patch to all subscribers. */
     private void notifySubscribers(Patch patch){
         this.publisher.offer(patch, null);
     }
-
+ 
     public static boolean checkVictoryArr(ArrayList<Integer> victoryArr, Pair<Integer, Integer> move, boolean isPlayerOne){
         return GameState.checkVictoryArr(victoryArr, move, isPlayerOne, 3);
     }

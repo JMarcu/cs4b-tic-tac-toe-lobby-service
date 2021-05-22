@@ -5,10 +5,17 @@ import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import org.javatuples.Pair;
 
+import models.ServerMessage.Message;
+import models.ServerMessage.MessageType;
+import models.ServerMessage.MessageBody.NewGameMessageBody;
+import services.GameServerService;
+
 public class GameServer extends Lobby {
 
     private GameState gameState;
     private Subscription gameStateSubscription;
+    private boolean playerOnePlayAgain;
+    private boolean playerTwoPlayAgain;
 
     public GameServer(Lobby lobby){
         super(lobby.getId(), lobby.getName(), lobby.getPlayers(), lobby.getStatus());
@@ -95,6 +102,36 @@ public class GameServer extends Lobby {
             }
         } else{
             return false;
+        }
+    }
+
+    public void playAgain(Player player){
+        if(
+            players.getValue0() == null ||
+            player.getUuid().equals(players.getValue0().getUuid())
+        ){
+                playerOnePlayAgain = true;
+        }
+
+        if(
+            players.getValue1() == null ||
+            player.getUuid().equals(players.getValue1().getUuid())
+        ){
+                playerTwoPlayAgain = true;
+        }
+
+        if(playerOnePlayAgain && playerTwoPlayAgain){
+            playerOnePlayAgain = false;
+            playerTwoPlayAgain = false;
+
+            this.gameState = new GameState(
+                gameState.getGameMode(),
+                gameState.getPlayers(),
+                gameState.getSinglePlayer(),
+                gameState.getSecondaryOption()
+            );
+            NewGameMessageBody body = new NewGameMessageBody(gameState);
+            GameServerService.getInstance().broadcast(id, new Message(body, MessageType.NEW_GAME));
         }
     }
 

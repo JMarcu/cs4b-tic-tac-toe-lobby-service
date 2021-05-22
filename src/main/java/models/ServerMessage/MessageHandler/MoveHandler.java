@@ -2,7 +2,6 @@ package models.ServerMessage.MessageHandler;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
-import interfaces.Sender;
 import models.GameServer;
 import models.Player;
 import models.ServerMessage.Message;
