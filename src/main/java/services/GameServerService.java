@@ -100,9 +100,11 @@ public class GameServerService {
     }
 
     public void broadcast(UUID lobbyId, Message message, UUID exclude){
+        System.out.println("broadcast");
         Set<UUID> clientKeys = this.clients.keySet();
         clientKeys.remove(exclude);
         clientKeys.forEach((UUID playerId) -> {
+            System.out.println("broadcast to client: " + playerId);
             Sender client = this.clients.get(playerId);
             try {
                 client.send(message);
