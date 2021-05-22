@@ -110,6 +110,8 @@ public class GameState implements Publisher<GameState.Patch>  {
     /** Flag for the type of game mode being played. */
     private GameMode gameMode;
 
+    private boolean online;
+
     /** Stores the players in the game. */
     private Pair<Player, Player> players;
 
@@ -149,7 +151,7 @@ public class GameState implements Publisher<GameState.Patch>  {
 
     /** Creates a default game: single player, free play, and with both players set to null. */
     public GameState(){
-        this(GameMode.FREE_PLAY, new Pair<Player, Player>(null, null), true, 0);
+        this(GameMode.FREE_PLAY, new Pair<Player, Player>(null, null), true, 0, true);
         this.status = GameState.Status.NEW;
     }
 
@@ -160,7 +162,7 @@ public class GameState implements Publisher<GameState.Patch>  {
      * @param singlePlayer True if player one should be versing the AI, false if both players are human.
      */
     public GameState(GameMode gameMode, Pair<Player, Player> players, Boolean singlePlayer){
-        this(gameMode, players, singlePlayer, 0);
+        this(gameMode, players, singlePlayer, 0, true);
     }
 
     /** 
@@ -171,8 +173,9 @@ public class GameState implements Publisher<GameState.Patch>  {
      * @param secondaryOption The game mode's secondary option value. The meaning of this option is contextual
      * based on the game mode.
      */
-    public GameState(GameMode gameMode, Pair<Player, Player> players, Boolean singlePlayer, int secondaryOption){
+    public GameState(GameMode gameMode, Pair<Player, Player> players, Boolean singlePlayer, int secondaryOption, boolean online){
         this.gameMode = gameMode;
+        this.online = online;
         this.players = players;
         this.singlePlayer = singlePlayer;
         this.secondaryOption = secondaryOption;
@@ -214,6 +217,8 @@ public class GameState implements Publisher<GameState.Patch>  {
      * @return The grid size.
      */
     public int getGridSize() { return this.GRID_SIZE; }
+
+    public boolean getOnline(){ return online; }
 
     /** 
      * Returns the players in the game. 

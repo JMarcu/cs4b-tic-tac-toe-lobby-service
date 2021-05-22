@@ -128,7 +128,8 @@ public class GameServer extends Lobby {
                 gameState.getGameMode(),
                 gameState.getPlayers(),
                 gameState.getSinglePlayer(),
-                gameState.getSecondaryOption()
+                gameState.getSecondaryOption(),
+                true
             );
             this.subscribeToGameState();
             NewGameMessageBody body = new NewGameMessageBody(gameState);
