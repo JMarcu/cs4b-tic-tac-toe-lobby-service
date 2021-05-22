@@ -74,16 +74,17 @@ public class GameServer extends Lobby {
     }
 
     public boolean makeMove(Player player, Pair<Integer, Integer> move){
-        if(players.getValue0().equals(player) || players.getValue1().equals(player)){
-            if(gameState.getCurrentPlayer().equals(player)){
-                try{
-                    gameState.setCell(move.getValue0(), move.getValue1());
-                    return true;
-                } catch(IllegalArgumentException ex){
-                    ex.printStackTrace();
-                    return false;
-                }
-            } else{
+        if(
+            player != null &&
+            gameState.getCurrentPlayer() != null && 
+            gameState.getStatus() == GameState.Status.IN_PROGRESS &&
+            gameState.getCurrentPlayer().getUuid().equals(player.getUuid())
+        ){
+            try{
+                gameState.setCell(move.getValue0(), move.getValue1());
+                return true;
+            } catch(IllegalArgumentException ex){
+                ex.printStackTrace();
                 return false;
             }
         } else{
