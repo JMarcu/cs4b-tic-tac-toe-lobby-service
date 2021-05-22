@@ -46,10 +46,13 @@ public class GameServerService {
     }
 
     public boolean addPlayer(UUID lobbyId, Player player, Sender sender){
+        System.out.println("Add Player to Game Server");
         boolean success = this.lobbyMap.get(lobbyId).addPlayer(player);
+        System.out.println("success: " + success);
         if(success){
             this.clients.put(player.getUuid(), sender);
         }
+
         return success;
     }
 
@@ -101,17 +104,32 @@ public class GameServerService {
 
     public void broadcast(UUID lobbyId, Message message, UUID exclude){
         System.out.println("broadcast");
-        Set<UUID> clientKeys = this.clients.keySet();
-        clientKeys.remove(exclude);
-        clientKeys.forEach((UUID playerId) -> {
-            System.out.println("broadcast to client: " + playerId);
-            Sender client = this.clients.get(playerId);
+        GameServer gameServer = this.lobbyMap.get(lobbyId);
+        if(
+            gameServer.getPlayers().getValue0() != null && 
+            !gameServer.getPlayers().getValue0().getUuid().equals(exclude)
+        ){
+            System.out.println("broadcast to client: " + gameServer.getPlayers().getValue0().getUuid());
+            Sender client = this.clients.get(gameServer.getPlayers().getValue0().getUuid());
             try {
                 client.send(message);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
+        }
+
+        if(
+            gameServer.getPlayers().getValue1() != null && 
+            !gameServer.getPlayers().getValue1().getUuid().equals(exclude)
+        ){
+            System.out.println("broadcast to client: " + gameServer.getPlayers().getValue1().getUuid());
+            Sender client = this.clients.get(gameServer.getPlayers().getValue1().getUuid());
+            try {
+                client.send(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static GameServerService getInstance(){
