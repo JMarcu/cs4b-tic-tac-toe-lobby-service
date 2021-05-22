@@ -1,11 +1,6 @@
 import java.io.*;
 import java.nio.channels.FileChannel;
 import org.apache.catalina.startup.Tomcat;
-
-import interfaces.GameDatabaseInterface;
-import interfaces.PlayerDatabaseInterface;
-import models.Player;
-import models.PlayerData;
 import services.MessageExecutor;
 
 public class App {
