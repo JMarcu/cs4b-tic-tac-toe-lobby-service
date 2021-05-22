@@ -26,6 +26,7 @@ public class MoveHandler implements Runnable{
 
             GameServer gameServer = GameServerService.getInstance().getGameServer(msg.getLobbyId());
             boolean success = gameServer.makeMove(player, msg.getMove());
+            System.out.println("Success: " + success);
             if(success){
                 Message message = new Message(msg, MessageType.MOVE);
                 GameServerService.getInstance().broadcast(msg.getLobbyId(), message);

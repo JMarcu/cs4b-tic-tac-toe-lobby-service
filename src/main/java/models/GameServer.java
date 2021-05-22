@@ -74,6 +74,11 @@ public class GameServer extends Lobby {
     }
 
     public boolean makeMove(Player player, Pair<Integer, Integer> move){
+        System.out.println("player != null: " + player != null);
+        System.out.println("getCurrentPlayer() != null: " + gameState.getCurrentPlayer() != null);
+        System.out.println("getStatus() == GameState.Status.IN_PROGRESS: " + (gameState.getStatus() == GameState.Status.IN_PROGRESS));
+        System.out.println("getCurrentPlayer().getUuid(): " + gameState.getCurrentPlayer() == null ? "null player" : gameState.getCurrentPlayer().getUuid());
+        System.out.println("player.getUuid(): " + player == null ? "null player" : player.getUuid());
         if(
             player != null &&
             gameState.getCurrentPlayer() != null && 
@@ -82,6 +87,7 @@ public class GameServer extends Lobby {
         ){
             try{
                 gameState.setCell(move.getValue0(), move.getValue1());
+                System.out.println("Set Cell Successfully");
                 return true;
             } catch(IllegalArgumentException ex){
                 ex.printStackTrace();
