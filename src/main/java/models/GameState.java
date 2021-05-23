@@ -297,6 +297,12 @@ public class GameState implements Publisher<GameState.Patch>  {
 
     public void setStatus(Status status){
         this.status = status;
+
+        this.notifySubscribers(new Patch(){
+            {
+                status = GameState.this.status;
+            }
+        });
     }
 
     /*==========================================================================================================
