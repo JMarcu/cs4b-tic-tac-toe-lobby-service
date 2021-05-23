@@ -270,7 +270,9 @@ public class GameState implements Publisher<GameState.Patch>  {
         System.out.println("this.players.getValue0()" + this.players.getValue0());
         System.out.println("this.players.getValue1()" + this.players.getValue1());
         System.out.println("status" + status);
+        System.out.println("status (pre): " + status);
         if(this.players.getValue0() != null && this.players.getValue1() != null && status == Status.NEW){
+            System.out.println("Setting status to IN_PROGRESS...");
             this.status = Status.IN_PROGRESS;
         }
     }
@@ -281,10 +283,12 @@ public class GameState implements Publisher<GameState.Patch>  {
 
         System.out.println("this.players.getValue0()" + this.players.getValue0());
         System.out.println("this.players.getValue1()" + this.players.getValue1());
-        System.out.println("status" + status);
+        System.out.println("status (pre): " + status);
         if(this.players.getValue0() != null && this.players.getValue1() != null && status == Status.NEW){
+            System.out.println("Setting status to IN_PROGRESS...");
             this.status = Status.IN_PROGRESS;
         }
+        System.out.println("status (post): " + status);
     }
 
     /*==========================================================================================================
