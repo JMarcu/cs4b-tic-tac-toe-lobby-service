@@ -1,19 +1,24 @@
 package models;
 
+import java.util.Random;
 import java.util.UUID;
 import org.javatuples.Pair;
 
-public class Lobby {    
+import javafx.scene.paint.Color;
+
+public class Lobby {
+    protected boolean aiLobby;
     protected UUID id;
     protected String name;
     protected Pair<Player, Player> players;
     protected GameState.Status status;
 
-    public Lobby(String name){
-        this(UUID.randomUUID(), name, new Pair<Player, Player>(null, null), GameState.Status.NEW);
+    public Lobby(String name, boolean isAi){
+        this(UUID.randomUUID(), name, new Pair<Player, Player>(null, null), GameState.Status.NEW, isAi);
     }
 
-    public Lobby(UUID id, String name, Pair<Player, Player> players, GameState.Status status){
+    public Lobby(UUID id, String name, Pair<Player, Player> players, GameState.Status status, boolean aiLobby){
+        this.aiLobby = aiLobby;
         this.id = id;
         this.name = name;
         this.players = players;
@@ -62,4 +67,5 @@ public class Lobby {
     public String getName(){ return this.name; }
     public Pair<Player, Player> getPlayers(){ return this.players; }
     public GameState.Status getStatus(){ return this.status; }
+    public boolean isAiLobby(){ return aiLobby; }
 }

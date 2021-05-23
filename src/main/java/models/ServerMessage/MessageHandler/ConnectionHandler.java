@@ -1,18 +1,15 @@
 package models.ServerMessage.MessageHandler;
 
-import java.io.IOException;
-
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
-
 import interfaces.Sender;
+import java.io.IOException;
 import models.GameServer;
 import models.Player;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageBody.ConnectionMessageBody;
 import models.ServerMessage.MessageBody.ConnectionSuccessMessageBody;
 import models.ServerMessage.MessageBody.PlayerJoinedMessageBody;
-import models.ServerMessage.MessageBody.PlayerLeaveMessageBody;
 import models.ServerMessage.MessageType;
 import services.GameServerService;
 import services.JWTService;

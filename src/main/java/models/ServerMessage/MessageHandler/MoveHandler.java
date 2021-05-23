@@ -2,6 +2,10 @@ package models.ServerMessage.MessageHandler;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
+
+import org.javatuples.Pair;
+
+import models.Ai;
 import models.GameServer;
 import models.Player;
 import models.ServerMessage.Message;
@@ -25,16 +29,26 @@ public class MoveHandler implements Runnable{
         if(JWTService.validate(msg.getJWT())){
             DecodedJWT decodedJwt = JWTService.decode(msg.getJWT());
             Player player = new Gson().fromJson(decodedJwt.getClaim("player").asString(), Player.class);
-            System.out.println("player: " + player);
-            System.out.println("msg.getLobbyId(): " + msg.getLobbyId());
 
             GameServer gameServer = GameServerService.getInstance().getGameServer(msg.getLobbyId());
-            System.out.println("gameServer: " + gameServer);
             boolean success = gameServer.makeMove(player, msg.getMove());
-            System.out.println("success: " + success);
             if(success){
                 Message message = new Message(msg, MessageType.MOVE);
                 GameServerService.getInstance().broadcast(msg.getLobbyId(), message);
+            }
+
+            if(
+                gameServer.getGameState().getCurrentPlayer() != null &&
+                gameServer.getGameState().getCurrentPlayer().getIsAI()
+            ){
+                Ai aiPlayer = (Ai)gameServer.getGameState().getCurrentPlayer();
+                Pair<Integer, Integer> move = aiPlayer.generateMove(gameServer.getGameState());
+                boolean aiSuccess = gameServer.makeMove(player, move);
+                if(aiSuccess){
+                    MoveMessageBody aiBody = new MoveMessageBody("", msg.getLobbyId(), move);
+                    Message message = new Message(aiBody, MessageType.MOVE);
+                    GameServerService.getInstance().broadcast(msg.getLobbyId(), message);
+                }
             }
         } else{
             System.err.println("Invalid JWT in Connection Request :: " + msg.getJWT());

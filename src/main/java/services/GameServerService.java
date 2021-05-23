@@ -3,9 +3,7 @@ package services;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.UUID;
-
 import interfaces.Sender;
 import models.GameServer;
 import models.Lobby;
@@ -46,9 +44,7 @@ public class GameServerService {
     }
 
     public boolean addPlayer(UUID lobbyId, Player player, Sender sender){
-        System.out.println("Add Player to Game Server");
         boolean success = this.lobbyMap.get(lobbyId).addPlayer(player);
-        System.out.println("success: " + success);
         if(success){
             this.clients.put(player.getUuid(), sender);
         }
@@ -58,7 +54,6 @@ public class GameServerService {
 
     public boolean removeClient(UUID playerId){
         if(this.clients.containsKey(playerId)){
-            System.out.println("Removing client " + playerId);
             this.clients.remove(playerId);
             return true;
         } else{
@@ -103,13 +98,12 @@ public class GameServerService {
     }
 
     public void broadcast(UUID lobbyId, Message message, UUID exclude){
-        System.out.println("broadcast");
         GameServer gameServer = this.lobbyMap.get(lobbyId);
         if(
             gameServer.getPlayers().getValue0() != null && 
-            !gameServer.getPlayers().getValue0().getUuid().equals(exclude)
+            !gameServer.getPlayers().getValue0().getUuid().equals(exclude) &&
+            !gameServer.getPlayers().getValue0().getIsAI()
         ){
-            System.out.println("broadcast to client: " + gameServer.getPlayers().getValue0().getUuid());
             Sender client = this.clients.get(gameServer.getPlayers().getValue0().getUuid());
             try {
                 client.send(message);
@@ -120,9 +114,9 @@ public class GameServerService {
 
         if(
             gameServer.getPlayers().getValue1() != null && 
-            !gameServer.getPlayers().getValue1().getUuid().equals(exclude)
+            !gameServer.getPlayers().getValue1().getUuid().equals(exclude) &&
+            !gameServer.getPlayers().getValue1().getIsAI()
         ){
-            System.out.println("broadcast to client: " + gameServer.getPlayers().getValue1().getUuid());
             Sender client = this.clients.get(gameServer.getPlayers().getValue1().getUuid());
             try {
                 client.send(message);

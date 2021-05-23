@@ -1,10 +1,12 @@
 package models;
 
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import org.javatuples.Pair;
 
+import javafx.scene.paint.Color;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageType;
 import models.ServerMessage.MessageBody.NewGameMessageBody;
@@ -18,25 +20,34 @@ public class GameServer extends Lobby {
     private boolean playerTwoPlayAgain;
 
     public GameServer(Lobby lobby){
-        super(lobby.getId(), lobby.getName(), lobby.getPlayers(), lobby.getStatus());
+        super(lobby.getId(), lobby.getName(), lobby.getPlayers(), lobby.getStatus(), lobby.isAiLobby());
         this.gameState = new GameState();
         this.subscribeToGameState();
+        if(aiLobby){
+            this.initializeAi();
+        }
     }
 
-    public GameServer(String name) {
-        super(name);
+    public GameServer(String name, boolean isAi) {
+        super(name, isAi);
         this.gameState = new GameState();
         this.subscribeToGameState();
+        if(aiLobby){
+            this.initializeAi();
+        }
     }
 
-    public GameServer(UUID id, String name, Pair<Player, Player> players, GameState.Status status){
-        super(id, name, players, status);
+    public GameServer(UUID id, String name, Pair<Player, Player> players, GameState.Status status, boolean aiLobby){
+        super(id, name, players, status, aiLobby);
         this.gameState = new GameState();
         this.subscribeToGameState();
+        if(aiLobby){
+            this.initializeAi();
+        }
     }
 
     public Lobby toLobby(){
-        return new Lobby(id, name, players, status);
+        return new Lobby(id, name, players, status, aiLobby);
     }
 
     public GameState getGameState(){
@@ -60,18 +71,11 @@ public class GameServer extends Lobby {
 
     @Override
     public boolean removePlayer(Player player){
-        System.out.println("Removing Player From Lobby");
-        System.out.println("Players: " + this.players);
-        System.out.println("Player Values: " + this.players.getValue0() + ", " + this.players.getValue1());
-        // System.out.println("Player One: " + this.players.getValue0() == null ? "null" : players.getValue0().getUuid());
-        // System.out.println("Player Two: " + this.players.getValue1() == null ? "null" : players.getValue1().getUuid());
         if(this.players.getValue0() != null && this.players.getValue0().getUuid().equals(player.getUuid())){
-            System.out.println("Player was Player One");
             players = new Pair<Player, Player>(null, players.getValue1());
             gameState.setPlayerOne(null);
             return true;
         } else if(this.players.getValue1() != null && this.players.getValue1().getUuid().equals(player.getUuid())){
-            System.out.println("Player was Player Two");
             players = new Pair<Player, Player>(players.getValue0(), null);
             gameState.setPlayerTwo(null);
             return true;
@@ -81,11 +85,6 @@ public class GameServer extends Lobby {
     }
 
     public boolean makeMove(Player player, Pair<Integer, Integer> move){
-        System.out.println("player != null: " + (player != null));
-        System.out.println("getCurrentPlayer() != null: " + (gameState.getCurrentPlayer() != null));
-        System.out.println("getStatus() == GameState.Status.IN_PROGRESS: " + (gameState.getStatus() == GameState.Status.IN_PROGRESS));
-        System.out.println("getCurrentPlayer().getUuid(): " + (gameState.getCurrentPlayer() == null ? "null player" : gameState.getCurrentPlayer().getUuid()));
-        System.out.println("player.getUuid(): " + (player == null ? "null player" : player.getUuid()));
         if(
             player != null &&
             gameState.getCurrentPlayer() != null && 
@@ -94,7 +93,6 @@ public class GameServer extends Lobby {
         ){
             try{
                 gameState.setCell(move.getValue0(), move.getValue1());
-                System.out.println("Set Cell Successfully");
                 return true;
             } catch(IllegalArgumentException ex){
                 ex.printStackTrace();
@@ -134,6 +132,56 @@ public class GameServer extends Lobby {
             this.subscribeToGameState();
             NewGameMessageBody body = new NewGameMessageBody(gameState);
             GameServerService.getInstance().broadcast(id, new Message(body, MessageType.NEW_GAME));
+        }
+    }
+
+    private void initializeAi(){
+        if(aiLobby){
+            MarkerShape shape = null;
+            int shapeIndex = new Random().nextInt(10);
+            switch(shapeIndex){
+                case 0: shape = MarkerShape.CAT; break;
+                case 1: shape = MarkerShape.X; break;
+                case 2: shape = MarkerShape.DRAGON; break;
+                case 3: shape = MarkerShape.FILLED; break;
+                case 4: shape = MarkerShape.FROWNY; break;
+                case 5: shape = MarkerShape.O; break;
+                case 6: shape = MarkerShape.OUTLINE; break;
+                case 7: shape = MarkerShape.SMILEY; break;
+                case 8: shape = MarkerShape.STAR; break;
+            }
+
+            Color color = null;
+            int colorIndex = new Random().nextInt(10);
+            switch(colorIndex){
+                case 0: color = Color.YELLOW; break;
+                case 1: color = Color.RED; break;
+                case 2: color = Color.ORANGE; break;
+                case 3: color = Color.PINK; break;
+                case 4: color = Color.BLUE; break;
+                case 5: color = Color.GREEN; break;
+                case 6: color = Color.TEAL; break;
+                case 7: color = Color.PURPLE; break;
+                case 8: color = Color.BLACK; break;
+            }
+
+            String aiName = null;
+            int nameIndex = new Random().nextInt(10);
+            switch(nameIndex){
+                case 0: aiName = "HAL 9000"; break;
+                case 1: aiName = "T-800"; break;
+                case 2: aiName = "GLaDOS"; break;
+                case 3: aiName = "SHODAN"; break;
+                case 4: aiName = "The Architect"; break;
+                case 5: aiName = "Cortana"; break;
+                case 6: aiName = "Data"; break;
+                case 7: aiName = "TARS"; break;
+                case 8: aiName = "R2D2"; break;
+            }
+
+            Ai ai = new Ai(color, aiName, shape);
+            this.players = new Pair<Player, Player>(this.players.getValue0(), ai);
+            gameState.setPlayerTwo(ai);
         }
     }
 

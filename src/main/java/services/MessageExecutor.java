@@ -2,34 +2,19 @@ package services;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 
-public class MessageExecutor extends Thread{
+public class MessageExecutor{
+
     private static MessageExecutor instance;
 
     private ExecutorService executor;
-    private LinkedBlockingQueue<Runnable> queue; 
     
     private MessageExecutor(){
         executor = Executors.newFixedThreadPool(20);
-        queue = new LinkedBlockingQueue<Runnable>();
     }
 
     public void queueMessageHandler(Runnable handler) throws InterruptedException{
-        // queue.put(handler);
         executor.execute(handler);
-    }
-    
-    public void run() {
-        // while(true){
-        //     if(!queue.isEmpty()){
-        //         try {
-        //             executor.execute(queue.take());
-        //         } catch (InterruptedException e) {
-        //             e.printStackTrace();
-        //         }
-        //     }
-        // }
     }
 
    /** 
