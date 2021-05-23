@@ -32,25 +32,29 @@ public class CreateLobbyHandler implements Runnable{
         Player player = null;
 
         if(JWTService.validate(msg.getJWT())){
-            DecodedJWT decodedJwt = JWTService.decode(msg.getJWT());
+            try{
+                DecodedJWT decodedJwt = JWTService.decode(msg.getJWT());
 
-            Gson gson = new GsonBuilder()
-                .excludeFieldsWithModifiers(Modifier.TRANSIENT)
-                .create();
+                Gson gson = new GsonBuilder()
+                    .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+                    .create();
 
-            String playerJson = decodedJwt.getClaim("player").asString();
-            player = gson.fromJson(playerJson, Player.class);
+                String playerJson = decodedJwt.getClaim("player").asString();
+                player = gson.fromJson(playerJson, Player.class);
 
-            GameServer gameServer = new GameServer(msg.getName(), msg.isAi());
-            GameServerService.getInstance().addGameServer(gameServer);
-            GameServerService.getInstance().addPlayer(gameServer.getId(), player, sender);
+                GameServer gameServer = new GameServer(msg.getName(), msg.isAi());
+                GameServerService.getInstance().addGameServer(gameServer);
+                GameServerService.getInstance().addPlayer(gameServer.getId(), player, sender);
 
-            ConnectionSuccessMessageBody body = new ConnectionSuccessMessageBody(
-                gameServer.getGameState(), 
-                gameServer.getId(),
-                ConnectionMessageBody.Type.JOIN
-            );
-            message = new Message(body, MessageType.CONNECTION_SUCCESS);
+                ConnectionSuccessMessageBody body = new ConnectionSuccessMessageBody(
+                    gameServer.getGameState(), 
+                    gameServer.getId(),
+                    ConnectionMessageBody.Type.JOIN
+                );
+                message = new Message(body, MessageType.CONNECTION_SUCCESS);
+            } catch(Exception ex){
+                ex.printStackTrace();
+            }
         } else{
             System.err.println("Invalid JWT in Connection Request :: " + msg.getJWT());
             message = new Message("", MessageType.CONNECTION_FAILURE);

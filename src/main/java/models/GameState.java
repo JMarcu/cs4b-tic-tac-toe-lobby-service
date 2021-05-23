@@ -286,7 +286,11 @@ public class GameState implements Publisher<GameState.Patch>  {
         System.out.println("status (pre): " + status);
         if(this.players.getValue0() != null && this.players.getValue1() != null && status == Status.NEW){
             System.out.println("Setting status to IN_PROGRESS...");
-            this.status = Status.IN_PROGRESS;
+            try{
+                this.status = Status.IN_PROGRESS;
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
         System.out.println("status (post): " + status);
     }
