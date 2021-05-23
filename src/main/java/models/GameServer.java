@@ -86,6 +86,11 @@ public class GameServer extends Lobby {
     }
 
     public boolean makeMove(Player player, Pair<Integer, Integer> move){
+        System.out.println("player" + player);
+        System.out.println("gameState.getCurrentPlayer()" + gameState.getCurrentPlayer());
+        System.out.println("gameState.getStatus()" + gameState.getStatus());
+        System.out.println("gameState.getCurrentPlayer().getUuid()" + gameState.getCurrentPlayer().getUuid());
+        System.out.println("player.getUuid()" + player.getUuid());
         if(
             player != null &&
             gameState.getCurrentPlayer() != null && 

@@ -46,7 +46,7 @@ public class MoveHandler implements Runnable{
                 Ai aiPlayer = (Ai)gameServer.getGameState().getCurrentPlayer();
                 Pair<Integer, Integer> move = aiPlayer.generateMove(gameServer.getGameState());
                 System.out.println("move" + move);
-                boolean aiSuccess = gameServer.makeMove(player, move);
+                boolean aiSuccess = gameServer.makeMove(aiPlayer, move);
                 System.out.println("aiSuccess" + aiSuccess);
                 if(aiSuccess){
                     MoveMessageBody aiBody = new MoveMessageBody("", msg.getLobbyId(), move);
