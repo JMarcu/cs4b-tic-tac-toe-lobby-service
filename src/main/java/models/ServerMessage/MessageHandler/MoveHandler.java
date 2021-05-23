@@ -7,6 +7,7 @@ import org.javatuples.Pair;
 
 import models.Ai;
 import models.GameServer;
+import models.GameState;
 import models.Player;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageType;
@@ -23,9 +24,6 @@ public class MoveHandler implements Runnable{
 
     @Override
     public void run() {
-        System.out.println("msg.getJWT(): " + msg.getJWT());
-        System.out.println("JWTService.validate(msg.getJWT()): " + JWTService.validate(msg.getJWT()));
-
         if(JWTService.validate(msg.getJWT())){
             DecodedJWT decodedJwt = JWTService.decode(msg.getJWT());
             Player player = new Gson().fromJson(decodedJwt.getClaim("player").asString(), Player.class);
@@ -37,13 +35,19 @@ public class MoveHandler implements Runnable{
                 GameServerService.getInstance().broadcast(msg.getLobbyId(), message);
             }
 
+            System.out.println("gameServer.getGameState().getCurrentPlayer()" + gameServer.getGameState().getCurrentPlayer());
+            System.out.println("gameServer.getGameState().getCurrentPlayer().getIsAI()" + gameServer.getGameState().getCurrentPlayer().getIsAI());
+            System.out.println("gameServer.getStatus()" + gameServer.getStatus());
             if(
                 gameServer.getGameState().getCurrentPlayer() != null &&
-                gameServer.getGameState().getCurrentPlayer().getIsAI()
+                gameServer.getGameState().getCurrentPlayer().getIsAI() &&
+                gameServer.getStatus() == GameState.Status.IN_PROGRESS
             ){
                 Ai aiPlayer = (Ai)gameServer.getGameState().getCurrentPlayer();
                 Pair<Integer, Integer> move = aiPlayer.generateMove(gameServer.getGameState());
+                System.out.println("move" + move);
                 boolean aiSuccess = gameServer.makeMove(player, move);
+                System.out.println("aiSuccess" + aiSuccess);
                 if(aiSuccess){
                     MoveMessageBody aiBody = new MoveMessageBody("", msg.getLobbyId(), move);
                     Message message = new Message(aiBody, MessageType.MOVE);

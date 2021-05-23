@@ -1,10 +1,7 @@
 package models;
 
-import java.util.Random;
 import java.util.UUID;
 import org.javatuples.Pair;
-
-import javafx.scene.paint.Color;
 
 public class Lobby {
     protected boolean aiLobby;
