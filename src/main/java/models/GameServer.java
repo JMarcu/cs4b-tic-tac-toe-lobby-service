@@ -124,7 +124,12 @@ public class GameServer extends Lobby {
                 playerTwoPlayAgain = true;
         }
 
-        if(playerOnePlayAgain && playerTwoPlayAgain){
+        boolean playerOneIsAi = gameState.getPlayers().getValue0().getIsAI();
+        boolean playerTwoIsAi = gameState.getPlayers().getValue1().getIsAI();
+        if(
+            (playerOnePlayAgain || playerOneIsAi) &&
+            (playerTwoPlayAgain || playerTwoIsAi)
+        ) {
             playerOnePlayAgain = false;
             playerTwoPlayAgain = false;
 
