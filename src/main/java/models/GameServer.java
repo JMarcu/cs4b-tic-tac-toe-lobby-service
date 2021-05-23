@@ -7,6 +7,7 @@ import java.util.concurrent.Flow.Subscription;
 import org.javatuples.Pair;
 
 import javafx.scene.paint.Color;
+import models.GameState.Status;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageType;
 import models.ServerMessage.MessageBody.NewGameMessageBody;
@@ -180,7 +181,9 @@ public class GameServer extends Lobby {
 
         Ai ai = new Ai(color, aiName, shape);
         this.players = new Pair<Player, Player>(this.players.getValue0(), ai);
-        gameState.setPlayerTwo(ai);        
+        gameState.setPlayerTwo(ai);
+        gameState.setStatus(Status.IN_PROGRESS);
+        System.out.println("Final status check: " + gameState.getStatus());
     }
 
     private void subscribeToGameState(){

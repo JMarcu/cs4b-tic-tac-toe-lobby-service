@@ -295,6 +295,10 @@ public class GameState implements Publisher<GameState.Patch>  {
         System.out.println("status (post): " + status);
     }
 
+    public void setStatus(Status status){
+        this.status = status;
+    }
+
     /*==========================================================================================================
      * GAME LOGIC - methods for controlling the flow of the game
      *==========================================================================================================*/
