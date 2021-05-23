@@ -264,16 +264,24 @@ public class GameState implements Publisher<GameState.Patch>  {
     public Player getWinner() { return this.winner; }
 
     public void setPlayerOne(Player player){
-        players = players.setAt0(player);
+        System.out.println("setPlayerOne");
+        players = new Pair<Player, Player>(player, players.getValue1());
 
+        System.out.println("this.players.getValue0()" + this.players.getValue0());
+        System.out.println("this.players.getValue1()" + this.players.getValue1());
+        System.out.println("status" + status);
         if(this.players.getValue0() != null && this.players.getValue1() != null && status == Status.NEW){
             this.status = Status.IN_PROGRESS;
         }
     }
 
     public void setPlayerTwo(Player player){
-        players = players.setAt1(player);
+        System.out.println("setPlayerTwo");
+        players = new Pair<Player, Player>(players.getValue0(), player);
 
+        System.out.println("this.players.getValue0()" + this.players.getValue0());
+        System.out.println("this.players.getValue1()" + this.players.getValue1());
+        System.out.println("status" + status);
         if(this.players.getValue0() != null && this.players.getValue1() != null && status == Status.NEW){
             this.status = Status.IN_PROGRESS;
         }

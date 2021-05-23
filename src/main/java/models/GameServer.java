@@ -136,53 +136,51 @@ public class GameServer extends Lobby {
     }
 
     private void initializeAi(){
-        if(aiLobby){
-            MarkerShape shape = null;
-            int shapeIndex = new Random().nextInt(10);
-            switch(shapeIndex){
-                case 0: shape = MarkerShape.CAT; break;
-                case 1: shape = MarkerShape.X; break;
-                case 2: shape = MarkerShape.DRAGON; break;
-                case 3: shape = MarkerShape.FILLED; break;
-                case 4: shape = MarkerShape.FROWNY; break;
-                case 5: shape = MarkerShape.O; break;
-                case 6: shape = MarkerShape.OUTLINE; break;
-                case 7: shape = MarkerShape.SMILEY; break;
-                case 8: shape = MarkerShape.STAR; break;
-            }
-
-            Color color = null;
-            int colorIndex = new Random().nextInt(10);
-            switch(colorIndex){
-                case 0: color = Color.YELLOW; break;
-                case 1: color = Color.RED; break;
-                case 2: color = Color.ORANGE; break;
-                case 3: color = Color.PINK; break;
-                case 4: color = Color.BLUE; break;
-                case 5: color = Color.GREEN; break;
-                case 6: color = Color.TEAL; break;
-                case 7: color = Color.PURPLE; break;
-                case 8: color = Color.BLACK; break;
-            }
-
-            String aiName = null;
-            int nameIndex = new Random().nextInt(10);
-            switch(nameIndex){
-                case 0: aiName = "HAL 9000"; break;
-                case 1: aiName = "T-800"; break;
-                case 2: aiName = "GLaDOS"; break;
-                case 3: aiName = "SHODAN"; break;
-                case 4: aiName = "The Architect"; break;
-                case 5: aiName = "Cortana"; break;
-                case 6: aiName = "Data"; break;
-                case 7: aiName = "TARS"; break;
-                case 8: aiName = "R2D2"; break;
-            }
-
-            Ai ai = new Ai(color, aiName, shape);
-            this.players = new Pair<Player, Player>(this.players.getValue0(), ai);
-            gameState.setPlayerTwo(ai);
+        MarkerShape shape = null;
+        int shapeIndex = new Random().nextInt(10);
+        switch(shapeIndex){
+            case 0: shape = MarkerShape.CAT; break;
+            case 1: shape = MarkerShape.X; break;
+            case 2: shape = MarkerShape.DRAGON; break;
+            case 3: shape = MarkerShape.FILLED; break;
+            case 4: shape = MarkerShape.FROWNY; break;
+            case 5: shape = MarkerShape.O; break;
+            case 6: shape = MarkerShape.OUTLINE; break;
+            case 7: shape = MarkerShape.SMILEY; break;
+            case 8: shape = MarkerShape.STAR; break;
         }
+
+        Color color = null;
+        int colorIndex = new Random().nextInt(10);
+        switch(colorIndex){
+            case 0: color = Color.YELLOW; break;
+            case 1: color = Color.RED; break;
+            case 2: color = Color.ORANGE; break;
+            case 3: color = Color.PINK; break;
+            case 4: color = Color.BLUE; break;
+            case 5: color = Color.GREEN; break;
+            case 6: color = Color.TEAL; break;
+            case 7: color = Color.PURPLE; break;
+            case 8: color = Color.BLACK; break;
+        }
+
+        String aiName = null;
+        int nameIndex = new Random().nextInt(10);
+        switch(nameIndex){
+            case 0: aiName = "HAL 9000"; break;
+            case 1: aiName = "T-800"; break;
+            case 2: aiName = "GLaDOS"; break;
+            case 3: aiName = "SHODAN"; break;
+            case 4: aiName = "The Architect"; break;
+            case 5: aiName = "Cortana"; break;
+            case 6: aiName = "Data"; break;
+            case 7: aiName = "TARS"; break;
+            case 8: aiName = "R2D2"; break;
+        }
+
+        Ai ai = new Ai(color, aiName, shape);
+        this.players = new Pair<Player, Player>(this.players.getValue0(), ai);
+        gameState.setPlayerTwo(ai);        
     }
 
     private void subscribeToGameState(){
