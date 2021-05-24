@@ -52,6 +52,11 @@ public class GameServerService {
         return success;
     }
 
+    public void addSpectator(UUID lobbyId, UUID playerId, Sender sender){
+        this.lobbyMap.get(lobbyId).addSpectator(playerId);
+        this.clients.put(playerId, sender);
+    }
+
     public boolean removeClient(UUID playerId){
         if(this.clients.containsKey(playerId)){
             this.clients.remove(playerId);
@@ -93,6 +98,10 @@ public class GameServerService {
         return success;
     }
 
+    public void removeSpectator(UUID lobbyId, UUID playerId){
+        this.lobbyMap.get(lobbyId).removeSpectator(playerId);
+    }
+
     public void broadcast(UUID lobbyId, Message message){
         this.broadcast(lobbyId, message, null);
     }
@@ -124,6 +133,15 @@ public class GameServerService {
                 e.printStackTrace();
             }
         }
+
+        gameServer.getSpectators().forEach((UUID spectatorId) -> {
+            Sender client = this.clients.get(spectatorId);
+            try {
+                client.send(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public static GameServerService getInstance(){

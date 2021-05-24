@@ -24,5 +24,8 @@ public enum MessageType {
     REFRESH_TOKEN,
     REGISTER,
     REQUEST_PLAYER,
+    SPECTATE_JOIN,
+    SPECTATE_LEAVE,
+    SPECTATE_SUCCESS,
     UNKNOWN
 }

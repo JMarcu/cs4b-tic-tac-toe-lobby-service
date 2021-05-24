@@ -1,5 +1,7 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 import org.javatuples.Pair;
 
@@ -8,6 +10,7 @@ public class Lobby {
     protected UUID id;
     protected String name;
     protected Pair<Player, Player> players;
+    protected HashMap<UUID, Boolean> spectators;
     protected GameState.Status status;
 
     public Lobby(String name, boolean isAi){
@@ -19,6 +22,7 @@ public class Lobby {
         this.id = id;
         this.name = name;
         this.players = players;
+        this.spectators = new HashMap<UUID, Boolean>();
         this.status = status;
     }
 
@@ -43,6 +47,10 @@ public class Lobby {
         }
     }
 
+    public void addSpectator(UUID playerId){
+        this.spectators.put(playerId, true);
+    }
+
     public boolean hasPlayer(UUID playerId){
         return (this.players.getValue0() != null && this.players.getValue0().getUuid().equals(playerId)) ||
             (this.players.getValue1() != null && this.players.getValue1().getUuid().equals(playerId));
@@ -60,9 +68,16 @@ public class Lobby {
         }
     }
     
+    public void removeSpectator(UUID playerId){
+        if(this.spectators.containsKey(playerId)){
+            this.spectators.put(playerId, false);
+        }
+    }
+
     public UUID getId(){ return this.id; }
     public String getName(){ return this.name; }
     public Pair<Player, Player> getPlayers(){ return this.players; }
+    public ArrayList<UUID> getSpectators() { return new ArrayList<UUID>(spectators.keySet()); }
     public GameState.Status getStatus(){ return this.status; }
     public boolean isAiLobby(){ return aiLobby; }
 }

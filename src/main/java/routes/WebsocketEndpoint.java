@@ -21,6 +21,8 @@ import models.ServerMessage.MessageBody.ConnectionMessageBody;
 import models.ServerMessage.MessageBody.CreateLobbyMessageBody;
 import models.ServerMessage.MessageBody.MoveMessageBody;
 import models.ServerMessage.MessageBody.PlayAgainMessageBody;
+import models.ServerMessage.MessageBody.SpectateJoinMessageBody;
+import models.ServerMessage.MessageBody.SpectateLeaveMessageBody;
 import models.ServerMessage.MessageHandler.AuthenticationAcknowledgedHandler;
 import models.ServerMessage.MessageHandler.AuthenticationRequestHandler;
 import models.ServerMessage.MessageHandler.ConnectionHandler;
@@ -28,6 +30,8 @@ import models.ServerMessage.MessageHandler.CreateLobbyHandler;
 import models.ServerMessage.MessageHandler.LobbyListHandler;
 import models.ServerMessage.MessageHandler.MoveHandler;
 import models.ServerMessage.MessageHandler.PlayAgainHandler;
+import models.ServerMessage.MessageHandler.SpectateJoinHandler;
+import models.ServerMessage.MessageHandler.SpectateLeaveHandler;
 import services.GameServerService;
 import services.JWTService;
 import services.MessageExecutor;
@@ -129,6 +133,19 @@ public class WebsocketEndpoint implements Sender {
                     break;
                 case REQUEST_PLAYER:
                     System.out.println("Received a REQUEST_PLAYER message :: this is likely an error, the lobby service does not process this message type.");
+                    break;
+                case SPECTATE_JOIN:
+                    SpectateJoinMessageBody specJoinBody = gson.fromJson(message.getBody(), SpectateJoinMessageBody.class);
+                    SpectateJoinHandler specJoinHandler = new SpectateJoinHandler(specJoinBody, this);
+                    MessageExecutor.getInstance().queueMessageHandler(specJoinHandler);
+                    break;
+                case SPECTATE_LEAVE:
+                    SpectateLeaveMessageBody specLeaveBody = gson.fromJson(message.getBody(), SpectateLeaveMessageBody.class);
+                    SpectateLeaveHandler specLeaveHandler = new SpectateLeaveHandler(specLeaveBody);
+                    MessageExecutor.getInstance().queueMessageHandler(specLeaveHandler);
+                    break;
+                case SPECTATE_SUCCESS:
+                    System.out.println("Received a SPECTATE_SUCCESS message :: this is likely an error, the lobby service does not process this message type.");
                     break;
                 default:
                     System.out.println("Received a message of unknown type :: " + messageString);
