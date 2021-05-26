@@ -32,7 +32,7 @@ public class GameDatabaseInterface {
         Statement stmt = conn.createStatement();
 
         //create Game History table -------------- MOVE
-        String sql = "CREATE TABLE IF NOT EXISTS GameHistory (gameId INTEGER not NULL, playerOneId VARCHAR(255) not NULL, playerTwoId VARCHAR(255) not NULL, winner VARCHAR(255) not NULL, gameStart BIGINT not NULL, gameEnd BIGINT not NULL, moves VARCHAR(255) not NULL, spectators VARCHAR(255) not NULL, PRIMARY KEY (gameId))";
+        String sql = "CREATE TABLE IF NOT EXISTS GameHistory (gameId INTEGER not NULL, playerOneId VARCHAR(255) not NULL, playerTwoId VARCHAR(255) not NULL, winner VARCHAR(255) not NULL, gameStart BIGINT not NULL, gameEnd BIGINT not NULL, moves VARCHAR(255) not NULL, spectators VARCHAR(255) not NULL, creator VARCHAR(255) not NULL, moveTimes VARCHAR(255) not NULL, PRIMARY KEY (gameId))";
         stmt.executeUpdate(sql);
 
         //close everything
@@ -66,7 +66,7 @@ public class GameDatabaseInterface {
 
         try{
             Connection conn = getConn();
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO GameHistory(gameId, playerOneId, playerTwoId, gameStatus, winner, gameStart, gameEnd, moves, spectators) VALUES (?,?,?,?,?,?,?,?)");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO GameHistory(gameId, playerOneId, playerTwoId, gameStatus, winner, gameStart, gameEnd, moves, spectators, creator, moveTimes) VALUES (?,?,?,?,?,?,?,?,?,?)");
             stmt.setInt(1, game.getGameId()); // gameId
             stmt.setString(2, game.getPlayers().getKey().toString()); // playerOneId
             stmt.setString(3, game.getPlayers().getValue().toString()); // playerTwoId
@@ -75,6 +75,8 @@ public class GameDatabaseInterface {
             stmt.setLong(6, game.getEnd());//gameEnd
             stmt.setString(7, game.getMoves().toString()); //moves
             stmt.setString(8,game.getSpectators().toString()); //spectators
+            stmt.setString(9, game.getCreator().toString()); //moves
+            stmt.setString(10,game.getMoveTimes().toString()); //spectators
             stmt.executeUpdate();
             //close everything
             stmt.close();
@@ -127,7 +129,20 @@ public class GameDatabaseInterface {
                 spectators.add(UUID.fromString(prepSpectators1[i]));
             }
             Pair<UUID,UUID> players = new Pair(playerOne,playerTwo);
-            game = new Game(gameStart, gameEnd, spectators, moves, winner, gameId, players);
+
+            UUID gameCreator = UUID.fromString(rs.getString(9));
+
+            String prepMoveTimes = rs.getString(10);
+            prepMoveTimes.replace("[", "");
+            prepMoveTimes.replace("]", "");
+            String[] prepMoveTimes2 = prepMoveTimes.split(", ");
+            List<Long> moveTimes = new ArrayList<Long>();
+            for (int i = 0; i < prepMoveTimes2.length; i++)
+            {
+                moveTimes.add(Long.parseLong(prepMoveTimes2[i]));
+            }
+
+            game = new Game(gameStart, gameEnd, spectators, moves, winner, gameId, players, gameCreator, moveTimes);
             games.add(game);
         }
         //close everything
@@ -184,7 +199,19 @@ public class GameDatabaseInterface {
                 spectators.add(UUID.fromString(prepSpectators1[i]));
             }
             Pair<UUID,UUID> players = new Pair(playerOne,playerTwo);
-            game = new Game(gameStart, gameEnd, spectators, moves, winner, gameId, players);
+
+            UUID gameCreator = UUID.fromString(rs.getString(9));
+
+            String prepMoveTimes = rs.getString(10);
+            prepMoveTimes.replace("[", "");
+            prepMoveTimes.replace("]", "");
+            String[] prepMoveTimes2 = prepMoveTimes.split(", ");
+            List<Long> moveTimes = new ArrayList<Long>();
+            for (int i = 0; i < prepMoveTimes2.length; i++)
+            {
+                moveTimes.add(Long.parseLong(prepMoveTimes2[i]));
+            }
+
             game.setStart(gameStart);
             game.setEndManually(gameEnd);
             game.setAllSpectators(spectators);
@@ -192,6 +219,8 @@ public class GameDatabaseInterface {
             game.setWinner(winner);
             game.setGameId(gameId);
             game.setPlayers(players);
+            game.setMoveTimes(moveTimes);
+            game.setCreator(gameCreator);
         }
         //close everything
         rs.close();
