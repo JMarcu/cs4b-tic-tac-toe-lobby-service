@@ -235,4 +235,76 @@ public class GameDatabaseInterface {
 
         return game;
     }
+
+
+    public List<Game> getGamesOfOnePlayer(UUID playerId){
+        List<Game> games;
+        games = new ArrayList<Game>();
+        //TODO
+        try{
+
+        Connection conn = getConn();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM GameHistory WHERE playerOneId = ? OR playerTwoId = ?");
+        stmt.setString(1, playerId.toString());
+        stmt.setString(2, playerId.toString());
+        ResultSet rs = stmt.executeQuery();     
+        Game game;
+        while (rs.next())
+        {
+            int gameId = rs.getInt(1);
+            UUID playerOne = UUID.fromString(rs.getString(2));
+            UUID playerTwo = UUID.fromString(rs.getString(3));
+            UUID winner = UUID.fromString(rs.getString(4));
+            long gameStart = rs.getLong(5);
+            long gameEnd = rs.getLong(6);
+            List<Pair<Integer,Integer>> moves = new ArrayList<Pair<Integer,Integer>>();
+            String prepMoves1 = rs.getString(7);
+            prepMoves1.replace("[", "");
+            prepMoves1.replace("]", "");
+            String[] prepMoves = prepMoves1.split(", ");
+            for (int i = 0; i < prepMoves.length; i++)
+            {
+                String[] prepMoves3 = prepMoves[i].split("=");
+                moves.add(new Pair<Integer,Integer>(Integer.parseInt(prepMoves[0]), Integer.parseInt(prepMoves3[1])));
+            }
+            List<UUID> spectators = new ArrayList<UUID>(); 
+            String prepSpectators = rs.getString(8);
+            prepSpectators.replace("[", "");
+            prepSpectators.replace("]", "");
+            String[] prepSpectators1 = prepSpectators.split(", ");
+            for (int i = 0; i < prepSpectators1.length; i++)
+            {
+                spectators.add(UUID.fromString(prepSpectators1[i]));
+            }
+            Pair<UUID,UUID> players = new Pair(playerOne,playerTwo);
+
+            UUID gameCreator = UUID.fromString(rs.getString(9));
+
+            String prepMoveTimes = rs.getString(10);
+            prepMoveTimes.replace("[", "");
+            prepMoveTimes.replace("]", "");
+            String[] prepMoveTimes2 = prepMoveTimes.split(", ");
+            List<Long> moveTimes = new ArrayList<Long>();
+            for (int i = 0; i < prepMoveTimes2.length; i++)
+            {
+                moveTimes.add(Long.parseLong(prepMoveTimes2[i]));
+            }
+
+            game = new Game(gameStart, gameEnd, spectators, moves, winner, gameId, players, gameCreator, moveTimes);
+            games.add(game);
+        }
+        //close everything
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        }
+        catch(Exception ex)
+        {
+            System.out.print("Error in PlayerDatabaseInterface");
+        }
+
+
+        return games;
+    }
 }
