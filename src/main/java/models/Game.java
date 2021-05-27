@@ -14,11 +14,13 @@ public class Game {
     private UUID winner;
     private Integer gameId;
     private Pair<UUID,UUID> players;
+    private UUID creator; // new
+    private List<Long> moveTimes; // new
 
     public Game(){ // probably change what it takes in
     }
 
-    public Game(Pair<UUID,UUID> people, Integer gameNumber){ // probably change what it takes in
+    public Game(Pair<UUID,UUID> people, Integer gameNumber, UUID gameCreator){ // probably change what it takes in
         start = System.currentTimeMillis();
         end = -1;
         players = people;
@@ -26,9 +28,11 @@ public class Game {
         gameId = gameNumber;
         moves = new ArrayList<Pair<Integer,Integer>>();
         spectators = new ArrayList<UUID>();
+        creator = gameCreator;
+        moveTimes = new ArrayList<Long>();
     }
 
-    public Game(long gameStart, long gameEnd, List<UUID> gameSpectators, List<Pair<Integer,Integer>> gameMoves, UUID gameWinner, Integer gameNumber, Pair<UUID,UUID> people){ // probably change what it takes in
+    public Game(long gameStart, long gameEnd, List<UUID> gameSpectators, List<Pair<Integer,Integer>> gameMoves, UUID gameWinner, Integer gameNumber, Pair<UUID,UUID> people, UUID gameCreator, List<Long> gameMoveTimes){ // probably change what it takes in
         start = gameStart;
         end = gameEnd;
         players = people;
@@ -36,6 +40,8 @@ public class Game {
         gameId = gameNumber;
         moves = gameMoves;
         spectators = gameSpectators;
+        creator = gameCreator;
+        moveTimes = gameMoveTimes;
     }
     public void setStart(long gameStart){
         start = gameStart;
@@ -103,5 +109,21 @@ public class Game {
 
     public List<UUID> getSpectators(){
         return spectators;
+    }
+
+    public List<Long> getMoveTimes(){
+        return moveTimes;
+    }
+
+    public void setMoveTimes(List<Long> gameMoveTimes){
+        moveTimes = gameMoveTimes;
+    }
+
+    public UUID getCreator(){
+        return creator;
+    }
+
+    public void setCreator(UUID gameCreator){
+        creator = gameCreator;
     }
 }
