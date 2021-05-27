@@ -74,7 +74,9 @@ public class ConnectionHandler implements Runnable{
                     body = new ConnectionSuccessMessageBody(null, gameServer.getId(), msg.getType());
                     message = new Message(body, MessageType.CONNECTION_SUCCESS);
                     GameServer server = GameServerService.getInstance().getGameServer(msg.getLobbyId());
-                    server.reset();
+                    if(server != null){
+                        server.reset();
+                    }
                 }
             } else{
                 message = new Message("", MessageType.CONNECTION_FAILURE);

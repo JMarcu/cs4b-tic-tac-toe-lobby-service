@@ -82,12 +82,18 @@ public class GameServerService {
             : 1;
         
         boolean success =  this.lobbyMap.get(lobbyId).removePlayer(player);
+        System.out.println("Success Removing from Lobby: " + success);
+        System.out.println("Player 1 Is Null: " + this.lobbyMap.get(lobbyId).getPlayers().getValue0() == null);
+        System.out.println("Player 1 Is AI: " + this.lobbyMap.get(lobbyId).getPlayers().getValue0().getIsAI());
+        System.out.println("Player 2 Is Null: " + this.lobbyMap.get(lobbyId).getPlayers().getValue1() == null);
+        System.out.println("Player 2 Is AI: " + this.lobbyMap.get(lobbyId).getPlayers().getValue1().getIsAI());
 
         if(
-            this.lobbyMap.get(lobbyId).getPlayers().getValue0() == null &&
-            this.lobbyMap.get(lobbyId).getPlayers().getValue1() == null
+            (this.lobbyMap.get(lobbyId).getPlayers().getValue0() == null || this.lobbyMap.get(lobbyId).getPlayers().getValue0().getIsAI()) &&
+            (this.lobbyMap.get(lobbyId).getPlayers().getValue1() == null || this.lobbyMap.get(lobbyId).getPlayers().getValue1().getIsAI())
         ){
             this.lobbyMap.remove(lobbyId);
+            System.out.println("Should be Removed, but is it? " + this.lobbyMap.containsKey(lobbyId));
         }
 
         if(success){
