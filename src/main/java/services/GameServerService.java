@@ -33,7 +33,8 @@ public class GameServerService {
 
     public ArrayList<Lobby> listAsLobbies(){
         final ArrayList<Lobby> lobbies = new ArrayList<Lobby>();
-        lobbyMap.values().forEach((GameServer gameServer) -> {
+        lobbyMap.keySet().forEach((UUID lobbyId) -> {
+            GameServer gameServer = this.lobbyMap.get(lobbyId);
             lobbies.add(gameServer.toLobby());
         });
         return lobbies;
@@ -93,10 +94,8 @@ public class GameServerService {
             (this.lobbyMap.get(lobbyId).getPlayers().getValue1() == null || this.lobbyMap.get(lobbyId).getPlayers().getValue1().getIsAI())
         ){
             this.lobbyMap.remove(lobbyId);
-            System.out.println("Should be Removed, but is it? " + this.lobbyMap.containsKey(lobbyId));
-        }
-
-        if(success){
+            System.out.println("Should be Removed, but is it? " + !this.lobbyMap.containsKey(lobbyId));
+        } else if(success){
             PlayerLeaveMessageBody body = new PlayerLeaveMessageBody(lobbyId, player.getUuid(), position);
             broadcast(lobbyId, new Message(body, MessageType.PLAYER_LEFT));
         }
