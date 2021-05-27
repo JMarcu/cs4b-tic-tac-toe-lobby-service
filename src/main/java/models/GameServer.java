@@ -146,6 +146,19 @@ public class GameServer extends Lobby {
         }
     }
 
+    public void reset(){
+        this.gameState = new GameState(
+            gameState.getGameMode(),
+            gameState.getPlayers(),
+            gameState.getSinglePlayer(),
+            gameState.getSecondaryOption(),
+            true
+        );
+        this.subscribeToGameState();
+        NewGameMessageBody body = new NewGameMessageBody(gameState);
+        GameServerService.getInstance().broadcast(id, new Message(body, MessageType.NEW_GAME));
+    }
+
     private void initializeAi(){
         MarkerShape shape = null;
         int shapeIndex = new Random().nextInt(10);

@@ -46,7 +46,9 @@ public class ConnectionHandler implements Runnable{
                    ? 0
                    : 1;
             } else{
+                System.out.println("Attempting to remove player from lobby.");
                 success = GameServerService.getInstance().removePlayer(msg.getLobbyId(), player, sender);
+                System.out.println("success: " + success);
             }
 
             if(success){
@@ -61,22 +63,35 @@ public class ConnectionHandler implements Runnable{
                         gameServer.getId(),
                         msg.getType()
                     );
+                    message = new Message(body, MessageType.CONNECTION_SUCCESS);
+
+                    try {
+                        sender.send(message);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 } else{
                     body = new ConnectionSuccessMessageBody(null, gameServer.getId(), msg.getType());
+                    message = new Message(body, MessageType.CONNECTION_SUCCESS);
+                    GameServer server = GameServerService.getInstance().getGameServer(msg.getLobbyId());
+                    server.reset();
                 }
-                message = new Message(body, MessageType.CONNECTION_SUCCESS);
             } else{
                 message = new Message("", MessageType.CONNECTION_FAILURE);
+                try {
+                    sender.send(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } else{
             System.err.println("Invalid JWT in Connection Request :: " + msg.getJwt());
             message = new Message("", MessageType.CONNECTION_FAILURE);
-        }
-
-        try {
-            sender.send(message);
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                sender.send(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
