@@ -46,9 +46,7 @@ public class ConnectionHandler implements Runnable{
                    ? 0
                    : 1;
             } else{
-                System.out.println("Attempting to remove player from lobby.");
                 success = GameServerService.getInstance().removePlayer(msg.getLobbyId(), player, sender);
-                System.out.println("success: " + success);
             }
 
             if(success){
